@@ -791,4 +791,4 @@ setInterval(() => {
     });
 }, 30000); // Every 30 seconds
 
-module.exports = { app, server, io, log }; 
+   module.exports = app;
