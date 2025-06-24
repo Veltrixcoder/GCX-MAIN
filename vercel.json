@@ -16,11 +16,7 @@
       "dest": "server.js"
     },
     {
-      "src": "/admin",
-      "dest": "/public/admin.html"
-    },
-    {
-      "src": "/server-logs",
+      "src": "/server-logs-sldonly",
       "dest": "/public/server-logs.html"
     },
     {
