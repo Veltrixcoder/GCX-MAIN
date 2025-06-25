@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SLD GC Portal</title>
+    <title>GCX (Gift Card Exchange) - Track Status</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -25,28 +25,136 @@
     </style>
 </head>
 <body class="min-h-screen gradient-bg text-white">
+    <!-- Header -->
+    <header class="w-full glass-effect card-shadow p-6 flex flex-col sm:flex-row items-center justify-between mb-8">
+        <div class="flex items-center space-x-4">
+            <img src="logo.png" alt="GCX Logo" class="w-14 h-14 rounded-full bg-white bg-opacity-10 p-2">
+            <div>
+                <h1 class="text-3xl font-bold text-white">GCX (Gift Card Exchange)</h1>
+                <p class="text-white text-opacity-70 text-lg">Track your gift card status</p>
+            </div>
+        </div>
+        <a href="/" class="apple-button text-white px-6 py-3 mt-4 sm:mt-0 font-semibold flex items-center space-x-2">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+    </header>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-effect rounded-3xl p-8 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <p id="loadingMessage" class="text-white text-lg">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Main Menu Content -->
+    <div id="mainMenuContent" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="w-24 h-24 mx-auto mb-6 bg-white bg-opacity-10 rounded-3xl flex items-center justify-center">
+                    <i class="fas fa-gift text-4xl text-white"></i>
+                </div>
+                <h1 class="text-5xl font-bold mb-4">GCX</h1>
+                <p class="text-2xl text-white text-opacity-80 mb-2">Gift Card Exchange</p>
+                <p class="text-white text-opacity-60">Track your gift card status</p>
+            </div>
+
+            <!-- Track Status Button -->
+            <div class="text-center mb-12">
+                <button id="trackStatusBtn" class="apple-button text-white py-4 px-8 text-xl font-semibold focus:outline-none">
+                    <i class="fas fa-search mr-3"></i>
+                    Track Status
+                </button>
+            </div>
+
+            <!-- Features Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white bg-opacity-10 rounded-xl p-6 feature-card">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Secure Tracking</h3>
+                    <p class="text-white text-opacity-80">Real-time status updates with secure authentication</p>
+                </div>
+                <div class="bg-white bg-opacity-10 rounded-xl p-6 feature-card">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-comments text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Live Support</h3>
+                    <p class="text-white text-opacity-80">Chat directly with our support team</p>
+                </div>
+                <div class="bg-white bg-opacity-10 rounded-xl p-6 feature-card">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-history text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Transaction History</h3>
+                    <p class="text-white text-opacity-80">Complete history of all your submissions</p>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="bg-white bg-opacity-10 rounded-xl p-8 feature-card">
+                <h3 class="text-3xl font-bold text-white mb-8">🧾 Frequently Asked Questions</h3>
+                <div class="space-y-8">
+                    <div class="bg-white bg-opacity-5 p-6 rounded-xl">
+                        <h4 class="text-2xl font-bold text-white mb-3">Which gift cards do you support?</h4>
+                        <p class="text-white text-opacity-90 text-lg">Amazon, Overwatch, and Roblox.</p>
+                    </div>
+                    <div class="bg-white bg-opacity-5 p-6 rounded-xl">
+                        <h4 class="text-2xl font-bold text-white mb-3">How do I prove my card is real?</h4>
+                        <p class="text-white text-opacity-90 text-lg">Record a short video showing the card redemption, and upload it during the submission process.</p>
+                    </div>
+                    <div class="bg-white bg-opacity-5 p-6 rounded-xl">
+                        <h4 class="text-2xl font-bold text-white mb-3">Is this legit?</h4>
+                        <p class="text-white text-opacity-90 text-lg">100%. We verify every transaction and offer real-time support.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="text-center text-white text-opacity-70 mt-12 pb-8">
+                <p>© 2025 GCX (Gift Card Exchange). All rights reserved.</p>
+                <div class="mt-4 space-x-4">
+                    <a href="https://www.youtube.com/@shirtlessdigital" class="hover:text-opacity-100">YouTube</a>
+                    <a href="mailto:contact@shirtlessdigital.com" class="hover:text-opacity-100">Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Auth Section -->
-    <div id="authSection" class="min-h-screen flex items-center justify-center p-4">
+    <div id="authSection" class="min-h-screen flex items-center justify-center p-4 hidden">
         <div class="w-full max-w-md">
             <div class="text-center mb-8">
                 <div class="w-20 h-20 mx-auto mb-6 bg-white bg-opacity-10 rounded-3xl flex items-center justify-center">
                     <i class="fas fa-gift text-3xl text-white"></i>
                 </div>
-                <h1 class="text-4xl font-bold mb-2">SLD GC Portal</h1>
+                <h1 class="text-4xl font-bold mb-2">GCX Portal</h1>
                 <p class="text-white text-opacity-70">Track your gift card status</p>
             </div>
             <div class="glass-effect rounded-3xl p-8">
+                <!-- Error Display Area -->
+                <div id="loginError" class="mb-6 p-4 bg-red-500 bg-opacity-20 border border-red-500 border-opacity-30 rounded-xl hidden">
+                    <p id="loginErrorMessage" class="text-red-300 text-center"></p>
+                </div>
+                
                 <div class="space-y-6">
                     <div>
                         <label class="block text-sm font-medium text-white text-opacity-90 mb-3">Email Address</label>
-                        <input type="email" id="email" placeholder="Enter your email" class="apple-input w-full px-4 py-4 text-white placeholder-gray-400 focus:outline-none">
+                        <input type="email" id="email" placeholder="Enter your email" class="apple-input w-full px-4 py-4 text-white placeholder-gray-400 focus:outline-none" onblur="validateEmail()">
+                        <p id="emailError" class="text-red-400 text-sm mt-1 hidden">Please enter a valid email address</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-white text-opacity-90 mb-3">Password</label>
                         <input type="password" id="password" placeholder="Enter your password" class="apple-input w-full px-4 py-4 text-white placeholder-gray-400 focus:outline-none">
                     </div>
-                    <button onclick="sendOtp()" class="apple-button w-full text-white py-4 px-6 font-semibold focus:outline-none">
-                        Continue
+                    <button id="loginBtn" onclick="sendOtp()" class="apple-button w-full text-white py-4 px-6 font-semibold focus:outline-none">
+                        <span class="button-text">Continue</span>
+                        <span class="button-loading hidden">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Processing...
+                        </span>
                     </button>
                 </div>
             </div>
@@ -69,8 +177,12 @@
                         <label class="block text-sm font-medium text-white text-opacity-90 mb-3">Verification Code</label>
                         <input type="text" id="otp" maxlength="6" placeholder="Enter 6-digit code" class="apple-input w-full px-4 py-4 text-white text-center text-2xl tracking-widest focus:outline-none">
                     </div>
-                    <button onclick="verifyOtp()" class="apple-button w-full text-white py-4 px-6 font-semibold focus:outline-none">
-                        Verify & Continue
+                    <button id="verifyBtn" onclick="verifyOtp()" class="apple-button w-full text-white py-4 px-6 font-semibold focus:outline-none">
+                        <span class="button-text">Verify & Continue</span>
+                        <span class="button-loading hidden">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Processing...
+                        </span>
                     </button>
                 </div>
             </div>
@@ -140,12 +252,70 @@
         
         window.onload = () => clearSession();
         
+        // Loading state management
+        function setLoading(buttonId, isLoading, message = 'Processing...') {
+            const button = document.getElementById(buttonId);
+            const buttonText = button.querySelector('.button-text');
+            const buttonLoading = button.querySelector('.button-loading');
+            
+            if (isLoading) {
+                button.disabled = true;
+                buttonText.classList.add('hidden');
+                buttonLoading.classList.remove('hidden');
+            } else {
+                button.disabled = false;
+                buttonText.classList.remove('hidden');
+                buttonLoading.classList.add('hidden');
+            }
+        }
+        
+        // Loading modal management
+        function showLoadingModal(message = 'Processing...') {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingModal').classList.remove('hidden');
+            console.log('Loading modal shown:', message);
+        }
+        
+        function hideLoadingModal() {
+            document.getElementById('loadingModal').classList.add('hidden');
+            console.log('Loading modal hidden');
+        }
+        
+        // Error display management
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('loginError');
+            const errorMessage = document.getElementById('loginErrorMessage');
+            errorMessage.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+        
+        function hideLoginError() {
+            document.getElementById('loginError').classList.add('hidden');
+        }
+        
+        // Email validation
+        function validateEmail() {
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                emailError.classList.remove('hidden');
+                return false;
+            } else {
+                emailError.classList.add('hidden');
+                return true;
+            }
+        }
+        
         function clearSession() {
             userId = userEmail = currentOtp = userName = null;
-            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('authSection').classList.add('hidden');
             document.getElementById('statusSection').classList.add('hidden');
             document.getElementById('otpSection').classList.add('hidden');
             document.getElementById('submissionsList').innerHTML = '';
+            hideLoadingModal();
+            hideLoginError();
         }
         
         function logout() { clearSession(); }
@@ -153,7 +323,21 @@
         async function sendOtp() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            if (!email || !password) return alert('Please enter both email and password');
+            
+            // Validation
+            if (!email || !password) {
+                showLoginError('Please enter both email and password');
+                return;
+            }
+            
+            if (!validateEmail()) {
+                showLoginError('Please enter a valid email address');
+                return;
+            }
+            
+            hideLoginError();
+            setLoading('loginBtn', true);
+            showLoadingModal('Sending verification code...');
             
             try {
                 const loginResponse = await fetch('/api/login', {
@@ -162,7 +346,13 @@
                     body: JSON.stringify({ email, password })
                 });
                 const loginData = await loginResponse.json();
-                if (!loginData.success) return alert(loginData.error || 'Login failed');
+                
+                if (!loginData.success) {
+                    hideLoadingModal();
+                    setLoading('loginBtn', false);
+                    showLoginError(loginData.error || 'Invalid email or password');
+                    return;
+                }
                 
                 userId = loginData.user.id;
                 userEmail = email;
@@ -174,22 +364,34 @@
                     body: JSON.stringify({ email, type: 'login' })
                 });
                 const otpData = await otpResponse.json();
+                
+                hideLoadingModal();
+                setLoading('loginBtn', false);
+                
                 if (otpData.success) {
                     document.getElementById('authSection').classList.add('hidden');
                     document.getElementById('otpSection').classList.remove('hidden');
-                    alert('OTP sent to your email');
+                    document.getElementById('otp').focus();
                 } else {
-                    alert(otpData.error || 'Failed to send OTP');
+                    showLoginError(otpData.error || 'Failed to send OTP');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to send OTP. Please try again.');
+                hideLoadingModal();
+                setLoading('loginBtn', false);
+                showLoginError('Failed to send OTP. Please try again.');
             }
         }
         
         async function verifyOtp() {
             const otp = document.getElementById('otp').value;
-            if (!otp) return alert('Please enter the OTP');
+            if (!otp) {
+                alert('Please enter the OTP');
+                return;
+            }
+            
+            setLoading('verifyBtn', true);
+            showLoadingModal('Verifying code...');
             
             try {
                 const response = await fetch('/api/verify-otp', {
@@ -198,6 +400,10 @@
                     body: JSON.stringify({ email: userEmail, otp, type: 'login' })
                 });
                 const data = await response.json();
+                
+                hideLoadingModal();
+                setLoading('verifyBtn', false);
+                
                 if (data.success) {
                     currentOtp = otp;
                     document.getElementById('otpSection').classList.add('hidden');
@@ -209,6 +415,8 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                hideLoadingModal();
+                setLoading('verifyBtn', false);
                 alert('Failed to verify OTP. Please try again.');
             }
         }
@@ -345,6 +553,15 @@
         
         document.getElementById('videoModal').addEventListener('click', e => {
             if (e.target === document.getElementById('videoModal')) closeVideoModal();
+        });
+
+        // Ensure login menu is hidden by default
+        document.getElementById('authSection').classList.add('hidden');
+        // Bind the Track Status button to show login menu
+        document.getElementById('trackStatusBtn').addEventListener('click', function() {
+            document.getElementById('mainMenuContent').classList.add('hidden');
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('email').focus();
         });
     </script>
 </body>
