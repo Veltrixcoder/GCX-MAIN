@@ -569,6 +569,28 @@ app.post('/api/messages', checkOtpAuth, async (req, res) => {
   }
 });
 
+// Check if submission is open (Sunday 9am-9pm)
+app.get('/isubmissionopen', (req, res) => {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const hour = now.getHours();
+    
+    // Check if it's Sunday (dayOfWeek === 0) and between 9am (9) and 9pm (21)
+    const isSubmissionOpen = dayOfWeek === 0 && hour >= 9 && hour < 21;
+    
+    log('info', 'Submission status checked', { 
+        dayOfWeek: dayOfWeek,
+        hour: hour,
+        isOpen: isSubmissionOpen,
+        ip: req.ip 
+    });
+    
+    res.json({ 
+        success: true, 
+        isSubmissionOpen: isSubmissionOpen 
+    });
+});
+
 // Admin routes
 app.get('/api/admin/users', async (req, res) => {
     try {
