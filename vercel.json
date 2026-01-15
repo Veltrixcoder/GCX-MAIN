@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "https://polished-lake-dc09.veltrix620.workers.dev/$1" }
+    { "source": "/(.*)", "destination": "https://yt2ia.zeabur.app/$1" }
   ]
 }
