@@ -1,195 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Veltrix AI — Image Forge</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:#070a12;
-  --card:#0f1628;
-  --neon:#6cf2ff;
-  --accent:#7c7cff;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  font-family:Inter,system-ui;
-  background:radial-gradient(circle at top,#111c3a,#070a12 70%);
-  color:white;
-  overflow-x:hidden;
-}
-header {
-  padding:20px;
-  font-size:26px;
-  font-weight:800;
-  letter-spacing:.5px;
-  text-align:center;
-  background:linear-gradient(90deg,#6cf2ff,#7c7cff);
-  -webkit-background-clip:text;
-  color:transparent;
-}
-.app {
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
-.panel {
-  background:rgba(255,255,255,.05);
-  backdrop-filter:blur(20px);
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 0 30px rgba(108,242,255,.15);
-}
-.controls {
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-input,select,button {
-  padding:14px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-  font-size:14px;
-}
-input,select {
-  flex:1;
-  background:#0b1325;
-  color:white;
-}
-button {
-  background:linear-gradient(135deg,#6cf2ff,#7c7cff);
-  color:black;
-  font-weight:600;
-  cursor:pointer;
-}
-button:hover { opacity:.9 }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flux AI Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
 
-#result {
-  margin-top:20px;
-  text-align:center;
-}
-#result img {
-  max-width:100%;
-  border-radius:16px;
-  box-shadow:0 0 40px rgba(108,242,255,.4);
-}
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
 
-.gallery {
-  margin-top:30px;
-}
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px;
-}
-.grid img {
-  width:100%;
-  border-radius:12px;
-  cursor:pointer;
-  transition:.25s;
-}
-.grid img:hover { transform:scale(1.07); }
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
 
-.loader {
-  width:40px;
-  height:40px;
-  border:4px solid rgba(255,255,255,.2);
-  border-top:4px solid var(--neon);
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:20px auto;
-}
-@keyframes spin { to{transform:rotate(360deg)} }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-footer {
-  opacity:.5;
-  text-align:center;
-  margin:30px 0 10px;
-  font-size:12px;
-}
-</style>
+        .image-card:hover .overlay {
+            opacity: 1;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col">
 
-<body>
-<header>VELTRIX AI — IMAGE FORGE</header>
+    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 p-2 rounded-lg">
+                        <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">
+                        FluxGen AI
+                    </span>
+                </div>
+                <div class="text-sm text-slate-400">
+                    <span id="storage-status">Checking Storage...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<div class="app">
-  <div class="panel">
-    <div class="controls">
-      <input id="prompt" placeholder="Describe your vision...">
-      <select id="model">
-        <option value="flux-dev">FLUX Dev (Artistic)</option>
-        <option value="flux-klein">FLUX Klein (Realistic)</option>
-      </select>
-      <button onclick="generate()">Create</button>
-    </div>
-    <div id="result"></div>
-  </div>
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+        
+        <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 shadow-xl mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="lg:col-span-1 space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Select Model</label>
+                        <div class="flex bg-slate-900 rounded-lg p-1 border border-slate-700">
+                            <button onclick="setModel('dev')" id="btn-dev" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-blue-600 text-white shadow-lg">
+                                Flux Dev
+                            </button>
+                            <button onclick="setModel('klein')" id="btn-klein" class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all">
+                                Flux Klein
+                            </button>
+                        </div>
+                    </div>
 
-  <div class="gallery">
-    <h3>Your Creations</h3>
-    <div class="grid" id="history"></div>
-  </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Prompt</label>
+                        <textarea id="promptInput" rows="4" 
+                            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-slate-500"
+                            placeholder="Describe your imagination... e.g., A cyberpunk city with neon lights under a purple moon"></textarea>
+                    </div>
 
-  <footer>Local cache • No login • Veltrix AI</footer>
-</div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Width</label>
+                            <input type="number" id="widthInput" value="1024" class="w-full bg-slate-900 border border-slate-700 rounded-md p-2 text-sm text-center">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Height</label>
+                            <input type="number" id="heightInput" value="768" class="w-full bg-slate-900 border border-slate-700 rounded-md p-2 text-sm text-center">
+                        </div>
+                    </div>
 
-<script>
-const API = "https://wild-art-dca7.veltrix620.workers.dev/";
+                    <button onclick="generate()" id="genBtn" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform transition hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+                        <span>Generate Image</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
 
-function clean(b64){
-  return b64.replace(/\s/g,"").replace(/[^A-Za-z0-9+/=]/g,"");
-}
+                <div class="lg:col-span-2 bg-slate-900 rounded-xl border border-slate-700 flex items-center justify-center relative overflow-hidden min-h-[400px]" id="previewContainer">
+                    
+                    <div id="placeholder" class="text-center p-8">
+                        <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-regular fa-image text-3xl text-slate-600"></i>
+                        </div>
+                        <p class="text-slate-500">Your artwork will appear here</p>
+                    </div>
 
-function loadHistory(){
-  const data = JSON.parse(localStorage.getItem("veltrix")||"[]");
-  const g = document.getElementById("history");
-  g.innerHTML="";
-  data.slice().reverse().forEach(i=>{
-    const img=document.createElement("img");
-    img.src=i.image;
-    img.title=i.prompt;
-    img.onclick=()=>show(i.image,i.prompt);
-    g.appendChild(img);
-  });
-}
+                    <div id="loading" class="hidden absolute inset-0 bg-slate-900/90 z-10 flex flex-col items-center justify-center">
+                        <div class="loader w-12 h-12 border-4 mb-4"></div>
+                        <p class="text-blue-400 animate-pulse">Dreaming up your image...</p>
+                        <p class="text-xs text-slate-500 mt-2">This may take 10-20 seconds</p>
+                    </div>
 
-function save(item){
-  let d=JSON.parse(localStorage.getItem("veltrix")||"[]");
-  d.push(item);
-  if(d.length>60)d.shift();
-  localStorage.setItem("veltrix",JSON.stringify(d));
-  loadHistory();
-}
+                    <img id="resultImage" class="hidden w-full h-full object-contain" alt="Generated Result">
+                </div>
+            </div>
+        </div>
 
-function show(src,p){
-  document.getElementById("result").innerHTML=
-    `<p><b>${p}</b></p><img src="${src}">`;
-}
+        <div class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-blue-500"></i>
+                    History
+                </h2>
+                <button onclick="clearHistory()" class="text-xs text-red-400 hover:text-red-300 underline">Clear All</button>
+            </div>
+            
+            <div id="historyGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                </div>
+            
+            <div id="emptyHistory" class="hidden text-center py-12 border-2 border-dashed border-slate-800 rounded-xl">
+                <p class="text-slate-500">No images generated yet.</p>
+            </div>
+        </div>
 
-async function generate(){
-  const p=document.getElementById("prompt").value.trim();
-  if(!p) return alert("Enter a prompt");
-  const m=document.getElementById("model").value;
-  document.getElementById("result").innerHTML=`<div class="loader"></div>`;
+    </main>
 
-  const url=`${API}${m}?prompt=${encodeURIComponent(p)}&width=1024&height=768`;
+    <footer class="border-t border-slate-800 bg-slate-900 py-6 mt-12">
+        <div class="container mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>Powered by Flux Dev & Klein Models. Runs entirely in your browser.</p>
+        </div>
+    </footer>
 
-  try{
-    const r=await fetch(url);
-    const d=await r.json();
-    if(!d.image||d.image.length<100) throw "bad";
-    const img="data:image/png;base64,"+clean(d.image);
-    show(img,p);
-    save({image:img,prompt:p,model:m,time:Date.now()});
-  }catch{
-    document.getElementById("result").innerText="Generation failed.";
-  }
-}
-loadHistory();
-</script>
+    <script>
+        // --- Configuration ---
+        const API_BASE = "https://wild-art-dca7.veltrix620.workers.dev";
+        let currentModel = 'dev'; // 'dev' or 'klein'
+        
+        // --- IndexedDB Setup (For large storage) ---
+        let db;
+        const DB_NAME = 'FluxGenDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'images';
+
+        const initDB = () => {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = (event) => {
+                    console.error("Database error:", event.target.error);
+                    document.getElementById('storage-status').textContent = "Storage Error";
+                };
+
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const objectStore = db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
+                        objectStore.createIndex("date", "date", { unique: false });
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    document.getElementById('storage-status').innerText = "History Active";
+                    loadHistory();
+                    resolve(db);
+                };
+            });
+        };
+
+        // --- Core Logic ---
+
+        function setModel(model) {
+            currentModel = model;
+            const btnDev = document.getElementById('btn-dev');
+            const btnKlein = document.getElementById('btn-klein');
+
+            if (model === 'dev') {
+                btnDev.className = "flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-blue-600 text-white shadow-lg";
+                btnKlein.className = "flex-1 py-2 px-4 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all";
+            } else {
+                btnKlein.className = "flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-purple-600 text-white shadow-lg";
+                btnDev.className = "flex-1 py-2 px-4 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all";
+            }
+        }
+
+        async function generate() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            const width = document.getElementById('widthInput').value;
+            const height = document.getElementById('heightInput').value;
+            const genBtn = document.getElementById('genBtn');
+            const loading = document.getElementById('loading');
+            const resultImg = document.getElementById('resultImage');
+            const placeholder = document.getElementById('placeholder');
+
+            if (!prompt) {
+                alert("Please enter a prompt");
+                return;
+            }
+
+            // UI State: Loading
+            genBtn.disabled = true;
+            genBtn.innerHTML = `<div class="loader w-4 h-4 border-2"></div> Generating...`;
+            loading.classList.remove('hidden');
+            resultImg.classList.add('hidden');
+            placeholder.classList.add('hidden');
+
+            try {
+                // Construct URL
+                const endpoint = currentModel === 'dev' ? '/flux-dev' : '/flux-klein';
+                const url = `${API_BASE}${endpoint}?prompt=${encodeURIComponent(prompt)}&width=${width}&height=${height}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success && data.image) {
+                    // Display Image
+                    resultImg.src = data.image; // Base64 is usually full data URI in this API
+                    resultImg.classList.remove('hidden');
+
+                    // Save to DB
+                    const record = {
+                        prompt: data.prompt || prompt,
+                        model: data.model || `Flux ${currentModel}`,
+                        image: data.image,
+                        width: data.width,
+                        height: data.height,
+                        date: new Date().getTime()
+                    };
+                    saveToDB(record);
+                } else {
+                    alert("API Error: " + (data.error || "Unknown error"));
+                    placeholder.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Generation failed. Please try again.");
+                placeholder.classList.remove('hidden');
+            } finally {
+                // UI State: Reset
+                genBtn.disabled = false;
+                genBtn.innerHTML = `<span>Generate Image</span><i class="fa-solid fa-arrow-right"></i>`;
+                loading.classList.add('hidden');
+            }
+        }
+
+        // --- Database Operations ---
+
+        function saveToDB(record) {
+            const transaction = db.transaction([STORE_NAME], "readwrite");
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.add(record);
+
+            request.onsuccess = () => {
+                loadHistory(); // Refresh grid
+            };
+        }
+
+        function loadHistory() {
+            const transaction = db.transaction([STORE_NAME], "readonly");
+            const store = transaction.objectStore(STORE_NAME);
+            const index = store.index("date");
+            const request = index.openCursor(null, 'prev'); // Newest first
+
+            const grid = document.getElementById('historyGrid');
+            grid.innerHTML = '';
+            let hasItems = false;
+
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    hasItems = true;
+                    renderCard(cursor.value, grid);
+                    cursor.continue();
+                } else {
+                    document.getElementById('emptyHistory').classList.toggle('hidden', hasItems);
+                }
+            };
+        }
+
+        function renderCard(data, container) {
+            const div = document.createElement('div');
+            div.className = "image-card group relative bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-lg transition-all hover:-translate-y-1 hover:shadow-blue-500/20";
+            
+            // Format Date
+            const dateStr = new Date(data.date).toLocaleDateString() + ' ' + new Date(data.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            div.innerHTML = `
+                <div class="aspect-video w-full bg-slate-900 overflow-hidden relative">
+                    <img src="${data.image}" class="w-full h-full object-cover" loading="lazy">
+                    <div class="overlay absolute inset-0 bg-black/60 opacity-0 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
+                        <a href="${data.image}" download="flux-${data.date}.jpg" class="p-2 bg-white/10 rounded-full hover:bg-white/20 text-white transition">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                        <button onclick="deleteImage(${data.id})" class="p-2 bg-red-500/20 rounded-full hover:bg-red-500/40 text-red-400 transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-blue-400 bg-blue-400/10 px-2 py-1 rounded">${data.model}</span>
+                        <span class="text-xs text-slate-500">${dateStr}</span>
+                    </div>
+                    <p class="text-sm text-slate-300 line-clamp-2" title="${data.prompt}">${data.prompt}</p>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function deleteImage(id) {
+            if(!confirm("Delete this image?")) return;
+            const transaction = db.transaction([STORE_NAME], "readwrite");
+            const store = transaction.objectStore(STORE_NAME);
+            store.delete(id);
+            transaction.oncomplete = () => loadHistory();
+        }
+
+        function clearHistory() {
+            if(!confirm("Are you sure you want to delete ALL history? This cannot be undone.")) return;
+            const transaction = db.transaction([STORE_NAME], "readwrite");
+            const store = transaction.objectStore(STORE_NAME);
+            store.clear();
+            transaction.oncomplete = () => loadHistory();
+        }
+
+        // Initialize
+        window.onload = initDB;
+
+    </script>
 </body>
 </html>
