@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,196 +8,241 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        dark: '#0b0f19',
-                        panel: '#151b2b',
-                        accent: '#6366f1',
-                        accentHover: '#4f46e5'
+                        // The new ultra-dark palette
+                        background: '#000000',
+                        panel: '#0a0a0a', 
+                        surface: '#121212',
+                        border: '#27272a', // Zinc 800
+                        accent: '#8b5cf6', // Violet 500
+                        accentAlt: '#06b6d4', // Cyan 500
+                    },
+                    backgroundImage: {
+                        'gradient-accent': 'linear-gradient(to right, #8b5cf6, #06b6d4)',
+                        'gradient-dark': 'linear-gradient(to bottom right, #121212, #000000)',
                     }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         
-        body { font-family: 'Inter', sans-serif; background: #0b0f19; color: #e2e8f0; }
-        
-        /* Glassmorphism & Utilities */
-        .glass-panel {
-            background: rgba(21, 27, 43, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #000000; 
+            color: #f4f4f5; /* Zinc 100 */
         }
         
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Ranges */
+        /* Subtler Glass */
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Sleek Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
+        /* Modern Range Slider */
         input[type=range] {
-            -webkit-appearance: none; background: transparent;
+            -webkit-appearance: none; background: transparent; height: 24px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #27272a; border-radius: 2px;
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: #6366f1; cursor: pointer; margin-top: -6px;
+            background: #f4f4f5; cursor: pointer; margin-top: -6px;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); /* Violet glow */
+            transition: all 0.2s;
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px;
+        input[type=range]:hover::-webkit-slider-thumb {
+            background: #8b5cf6;
+            transform: scale(1.1);
         }
 
-        /* Loading Animation */
-        .shimmer {
-            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+        /* Animations */
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
         }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .shimmer-loading {
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            animation: loading 1.5s infinite;
+        }
     </style>
 </head>
-<body class="h-screen flex overflow-hidden">
+<body class="h-screen flex overflow-hidden bg-background">
 
-    <aside class="w-64 bg-panel border-r border-slate-800 flex flex-col hidden md:flex z-20">
-        <div class="p-6 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                <i class="fa-solid fa-layer-group text-white text-sm"></i>
+    <aside class="w-72 bg-black/90 backdrop-blur-xl border-r border-border flex flex-col hidden md:flex z-30 relative">
+        <div class="absolute top-0 left-0 w-full h-64 bg-accent/10 blur-[100px] -z-10 pointer-events-none"></div>
+
+        <div class="p-6 flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-md bg-gradient-accent flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                <i class="fa-solid fa-cube text-white text-sm"></i>
             </div>
-            <h1 class="text-xl font-bold tracking-tight text-white">FluxGen <span class="text-indigo-400">Pro</span></h1>
+            <h1 class="text-lg font-bold tracking-tight text-white">FluxGen <span class="text-transparent bg-clip-text bg-gradient-accent">Studio</span></h1>
         </div>
 
-        <nav class="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
-            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3 mt-4">Models</div>
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+            <div class="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest mb-3 px-2">Generative Models</div>
             
-            <button onclick="selectModel('flux-dev')" id="nav-flux-dev" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600/10 text-indigo-400 border border-indigo-500/20">
-                <i class="fa-solid fa-bolt mr-2"></i> Flux Dev (Default)
+            <button onclick="selectModel('flux-dev')" id="nav-flux-dev" class="model-btn active">
+                <i class="fa-solid fa-bolt mr-3 w-4 text-center"></i> Flux Dev <span class="ml-auto text-[10px] opacity-60 font-mono">F.2</span>
             </button>
-            <button onclick="selectModel('flux-klein')" id="nav-flux-klein" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors">
-                <i class="fa-solid fa-wind mr-2"></i> Flux Klein 9B
+            <button onclick="selectModel('flux-klein')" id="nav-flux-klein" class="model-btn">
+                <i class="fa-solid fa-wind mr-3 w-4 text-center"></i> Flux Klein <span class="ml-auto text-[10px] opacity-60 font-mono">9B</span>
             </button>
-            <button onclick="selectModel('lucid-origin')" id="nav-lucid-origin" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors">
-                <i class="fa-solid fa-gem mr-2 text-amber-400"></i> Lucid Origin
+            <button onclick="selectModel('lucid-origin')" id="nav-lucid-origin" class="model-btn">
+                <i class="fa-solid fa-gem mr-3 w-4 text-center text-amber-500"></i> Lucid Origin
             </button>
-            <button onclick="selectModel('dreamshaper')" id="nav-dreamshaper" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors">
-                <i class="fa-solid fa-camera mr-2"></i> DreamShaper 8
+            <button onclick="selectModel('dreamshaper')" id="nav-dreamshaper" class="model-btn">
+                <i class="fa-solid fa-camera-retro mr-3 w-4 text-center"></i> DreamShaper 8
             </button>
-            <button onclick="selectModel('stable-diffusion-xl-lightning')" id="nav-stable-diffusion-xl-lightning" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors">
-                <i class="fa-solid fa-bolt-lightning mr-2 text-yellow-400"></i> SDXL Lightning
+            <div class="my-4 border-t border-border/50 mx-2"></div>
+             <div class="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest mb-3 px-2">Stable Diffusion</div>
+            <button onclick="selectModel('stable-diffusion-xl-lightning')" id="nav-stable-diffusion-xl-lightning" class="model-btn">
+                <i class="fa-solid fa-bolt-lightning mr-3 w-4 text-center text-yellow-500"></i> SDXL Lightning
             </button>
-            <button onclick="selectModel('stable-diffusion-xl-base')" id="nav-stable-diffusion-xl-base" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors">
-                <i class="fa-solid fa-cube mr-2"></i> SDXL Base 1.0
+            <button onclick="selectModel('stable-diffusion-xl-base')" id="nav-stable-diffusion-xl-base" class="model-btn">
+                <i class="fa-solid fa-layer-group mr-3 w-4 text-center"></i> SDXL Base 1.0
             </button>
             
-            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3 mt-6">Tools</div>
-            <button onclick="selectModel('stable-diffusion-img2img')" id="nav-stable-diffusion-img2img" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors">
-                <i class="fa-solid fa-wand-magic mr-2 text-pink-400"></i> Img2Img (SD 1.5)
+            <div class="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest mb-3 px-2 mt-6">Tools</div>
+            <button onclick="selectModel('stable-diffusion-img2img')" id="nav-stable-diffusion-img2img" class="model-btn">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-4 text-center text-pink-500"></i> Img2Img (SD 1.5)
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-800">
-            <div class="flex items-center justify-between text-xs text-slate-500">
-                <span id="storage-status"><i class="fa-solid fa-database mr-1"></i> Storage: ...</span>
-                <button onclick="clearHistory()" class="hover:text-red-400 transition">Clear</button>
+        <div class="p-4 border-t border-border bg-black/50">
+            <div class="flex items-center justify-between text-xs text-zinc-400 font-mono">
+                <span id="storage-status"><i class="fa-solid fa-database mr-2"></i>...</span>
+                <button onclick="clearHistory()" class="hover:text-red-400 transition px-2 py-1 hover:bg-red-500/10 rounded">Clear DB</button>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-background">
         
-        <div class="md:hidden flex items-center justify-between p-4 bg-panel border-b border-slate-800">
-            <h1 class="font-bold">FluxGen Pro</h1>
-            <button class="text-slate-400"><i class="fa-solid fa-bars"></i></button>
+        <div class="md:hidden flex items-center justify-between p-4 bg-black border-b border-border">
+            <h1 class="font-bold flex items-center gap-2"><i class="fa-solid fa-cube text-accent"></i> FluxGen Studio</h1>
         </div>
 
-        <div class="flex-1 flex overflow-hidden">
-            
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 scroll-smooth">
+        <div class="flex-1 flex overflow-hidden relative">
+             <div class="absolute top-1/3 right-0 w-96 h-96 bg-accentAlt/5 blur-[150px] -z-10 pointer-events-none"></div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-8 scroll-smooth">
                 
-                <div class="max-w-4xl mx-auto space-y-8">
+                <div class="max-w-5xl mx-auto space-y-6">
                     
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-end">
-                            <label class="text-sm font-medium text-indigo-400 uppercase tracking-wider">Positive Prompt</label>
-                            <span id="activeModelLabel" class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400 border border-slate-700">Flux Dev</span>
-                        </div>
-                        <div class="relative group">
+                    <div class="glass-panel rounded-2xl p-1.5 focus-within:ring-1 focus-within:ring-accent/50 transition-all shadow-2xl shadow-black/50 relative overflow-hidden">
+                        <div class="absolute inset-0 shimmer-loading opacity-0 pointer-events-none transition-opacity" id="promptShimmer"></div>
+                        <div class="bg-[#0a0a0a] rounded-xl p-4 relative">
+                             <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-semibold text-accent uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-terminal"></i> Positive Prompt
+                                </label>
+                                <span id="activeModelLabel" class="text-[10px] font-mono bg-zinc-900 px-2 py-0.5 rounded-full text-zinc-400 border border-zinc-800 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span> Flux Dev
+                                </span>
+                            </div>
                             <textarea id="promptInput" rows="3" 
-                                class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-base focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-slate-600 resize-none shadow-inner text-white"
-                                placeholder="A futuristic city with bioluminescent plants, cinematic lighting, 8k resolution..."></textarea>
-                            <button onclick="generate()" id="genBtn" class="absolute bottom-3 right-3 bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded-lg shadow-lg transition-all flex items-center gap-2 px-4 font-medium">
-                                <span>Generate</span> <i class="fa-solid fa-paper-plane"></i>
-                            </button>
-                        </div>
-
-                        <div id="imgInputContainer" class="hidden animate-fade-in">
-                            <label class="text-sm font-medium text-slate-400 mb-2 block">Source Image (Required for Img2Img)</label>
-                            <div class="border-2 border-dashed border-slate-700 rounded-xl p-6 text-center hover:bg-slate-800/50 transition-colors relative">
-                                <input type="file" id="imageUpload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleImageSelect(this)">
-                                <div id="uploadPlaceholder">
-                                    <i class="fa-solid fa-cloud-upload-alt text-2xl text-slate-500 mb-2"></i>
-                                    <p class="text-sm text-slate-400">Click or Drag image here</p>
+                                class="w-full bg-transparent border-none outline-none text-base text-white placeholder-zinc-600 resize-none font-light"
+                                placeholder="Describe your imagination... e.g., A futuristic city with bioluminescent plants, cinematic lighting, 8k resolution"></textarea>
+                            
+                            <div class="flex justify-between items-center mt-3 pt-3 border-t border-zinc-800/50">
+                                <div id="imgInputContainer" class="hidden flex items-center gap-2">
+                                    <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageSelect(this)">
+                                    <button onclick="document.getElementById('imageUpload').click()" class="text-xs flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 px-3 py-1.5 rounded-lg transition text-zinc-300 border border-zinc-800">
+                                        <i class="fa-solid fa-image"></i> Upload Source
+                                    </button>
+                                    <img id="previewUpload" class="hidden h-8 w-8 rounded object-cover border border-zinc-700">
                                 </div>
-                                <img id="previewUpload" class="hidden h-32 mx-auto rounded shadow-lg object-contain">
+                                <div id="imgInputPlaceholder" class="flex-1"></div> <button onclick="generate()" id="genBtn" class="bg-gradient-accent hover:opacity-90 text-white py-2 px-6 rounded-lg shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all flex items-center gap-2 font-semibold text-sm group relative overflow-hidden">
+                                    <span class="relative z-10">Generate</span> <i class="fa-solid fa-wand-magic-sparkles relative z-10 group-hover:rotate-12 transition-transform"></i>
+                                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-panel p-6 rounded-xl border border-slate-800">
-                        
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="text-xs font-semibold text-slate-500 uppercase mb-2 block">Negative Prompt</label>
-                            <input type="text" id="negativePrompt" 
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm focus:border-indigo-500 outline-none text-slate-300"
-                                placeholder="blurry, low quality, distorted, ugly...">
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        <div class="w-full lg:w-80 space-y-6">
+                             <div class="glass-panel rounded-xl p-5">
+                                <label class="text-[11px] font-semibold text-zinc-500 uppercase mb-3 block flex items-center gap-2">
+                                    <i class="fa-solid fa-ban"></i> Negative Prompt
+                                </label>
+                                <textarea id="negativePrompt" rows="2"
+                                    class="w-full bg-[#0a0a0a] border border-zinc-800 rounded-lg p-3 text-sm focus:border-accent outline-none text-zinc-300 resize-none placeholder-zinc-700 transition-colors"
+                                    placeholder="blurry, low quality, distorted..."></textarea>
+                            </div>
+
+                            <div class="glass-panel rounded-xl p-5 space-y-6">
+                                <div>
+                                    <div class="flex justify-between text-[11px] uppercase font-semibold mb-3 text-zinc-500">
+                                        <span>Width</span>
+                                        <span id="widthVal" class="text-accent font-mono bg-accent/10 px-1.5 rounded">1024</span>
+                                    </div>
+                                    <input type="range" id="widthInput" min="256" max="1440" step="64" value="1024" oninput="updateRange('width', this.value)">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-[11px] uppercase font-semibold mb-3 text-zinc-500">
+                                        <span>Height</span>
+                                        <span id="heightVal" class="text-accent font-mono bg-accent/10 px-1.5 rounded">768</span>
+                                    </div>
+                                    <input type="range" id="heightInput" min="256" max="1440" step="64" value="768" oninput="updateRange('height', this.value)">
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span class="text-slate-400">Width</span>
-                                <span id="widthVal" class="text-indigo-400 font-mono">1024</span>
+                        <div class="flex-1 relative bg-[#050505] rounded-2xl border border-border overflow-hidden min-h-[400px] lg:min-h-[500px] flex items-center justify-center group shadow-2xl shadow-black" id="viewport">
+                            
+                            <div id="placeholderState" class="text-center p-8">
+                                <div class="w-20 h-20 bg-zinc-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-800/50">
+                                    <i class="fa-solid fa-image text-3xl text-zinc-700"></i>
+                                </div>
+                                <h3 class="text-zinc-300 font-medium">Canvas Empty</h3>
+                                <p class="text-zinc-600 text-sm mt-2 max-w-xs mx-auto">Configure your settings and enter a prompt to begin creating.</p>
                             </div>
-                            <input type="range" id="widthInput" min="256" max="1440" step="64" value="1024" oninput="updateRange('width', this.value)">
-                        </div>
-                        
-                        <div>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span class="text-slate-400">Height</span>
-                                <span id="heightVal" class="text-indigo-400 font-mono">768</span>
+
+                            <div id="loadingState" class="hidden absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md">
+                                <div class="relative">
+                                    <div class="w-16 h-16 border-4 border-zinc-800 rounded-full"></div>
+                                    <div class="w-16 h-16 border-4 border-t-accent border-r-accentAlt border-b-transparent border-l-transparent rounded-full animate-spin absolute inset-0"></div>
+                                </div>
+                                <p class="mt-6 text-transparent bg-clip-text bg-gradient-accent font-medium animate-pulse">Creating masterpiece...</p>
                             </div>
-                            <input type="range" id="heightInput" min="256" max="1440" step="64" value="768" oninput="updateRange('height', this.value)">
+
+                            <img id="resultImage" class="hidden w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" crossorigin="anonymous">
+                            
+                            <div id="resultActions" class="hidden absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-6 backdrop-blur-[2px]">
+                                <div class="flex gap-3 p-2 bg-black/60 backdrop-blur-xl rounded-2xl border border-white/10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                                    <button onclick="downloadCurrentImage()" class="hover:bg-white/10 text-zinc-300 hover:text-white px-4 py-2 rounded-xl flex items-center gap-2 transition">
+                                        <i class="fa-solid fa-download"></i> <span class="text-sm">Save</span>
+                                    </button>
+                                    <a id="hdLink" target="_blank" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition border border-white/5">
+                                        <i class="fa-solid fa-expand"></i> <span class="text-sm">Full Size</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="relative bg-black/40 rounded-2xl border border-slate-800 overflow-hidden min-h-[500px] flex items-center justify-center group" id="viewport">
-                        
-                        <div id="placeholderState" class="text-center">
-                            <div class="w-24 h-24 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                                <i class="fa-solid fa-wand-magic-sparkles text-4xl text-slate-700"></i>
-                            </div>
-                            <h3 class="text-slate-300 font-medium">Ready to Create</h3>
-                            <p class="text-slate-500 text-sm mt-1">Select a model and type a prompt</p>
-                        </div>
-
-                        <div id="loadingState" class="hidden absolute inset-0 z-10 flex flex-col items-center justify-center bg-dark/80 backdrop-blur-sm">
-                            <div class="w-64 h-2 bg-slate-800 rounded-full overflow-hidden relative">
-                                <div class="absolute inset-0 bg-indigo-500 animate-[loading_2s_ease-in-out_infinite] w-1/2"></div>
-                            </div>
-                            <p class="mt-4 text-indigo-400 font-mono text-sm animate-pulse">Processing GPU Request...</p>
-                        </div>
-
-                        <img id="resultImage" class="hidden max-w-full max-h-[700px] shadow-2xl transition-transform duration-500 hover:scale-[1.01]">
-                        
-                        <div id="resultActions" class="hidden absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent flex justify-center gap-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                            <a id="downloadLink" download class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-md flex items-center gap-2 cursor-pointer border border-white/10">
-                                <i class="fa-solid fa-download"></i> Download
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="pt-8 border-t border-slate-800">
-                        <h3 class="text-lg font-semibold text-white mb-4">Recent Generations</h3>
-                        <div id="historyGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="pt-8 border-t border-border">
+                        <h3 class="text-sm font-semibold text-zinc-400 mb-6 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Recent Creations
+                        </h3>
+                        <div id="historyGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                             </div>
                     </div>
                 </div>
@@ -205,17 +250,30 @@
         </div>
     </main>
 
+    <style>
+        .model-btn {
+            @apply w-full text-left px-4 py-3 rounded-xl text-xs font-medium text-zinc-400 transition-all border border-transparent flex items-center hover:bg-zinc-900/50 hover:text-zinc-200;
+        }
+        .model-btn.active {
+            @apply bg-[#121212] text-white border-zinc-800/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)];
+        }
+        .model-btn.active i {
+            @apply text-accent;
+        }
+    </style>
+
     <script>
         // --- Configuration ---
         const API_BASE = "https://wild-art-dca7.veltrix620.workers.dev";
         let state = {
-            model: 'flux-dev', // Default ID
-            modelName: 'Flux 2 Dev',
-            base64Input: null
+            model: 'flux-dev', 
+            modelName: 'Flux Dev',
+            base64Input: null,
+            currentResultUrl: null
         };
 
         const endpoints = {
-            'flux-dev': { url: '/flux-dev', name: 'Flux 2 Dev' },
+            'flux-dev': { url: '/flux-dev', name: 'Flux Dev' },
             'flux-klein': { url: '/flux-klein', name: 'Flux Klein 9B' },
             'lucid-origin': { url: '/lucid-origin', name: 'Lucid Origin' },
             'dreamshaper': { url: '/dreamshaper', name: 'DreamShaper 8' },
@@ -226,7 +284,7 @@
 
         // --- IndexedDB ---
         let db;
-        const DB_NAME = 'FluxProDB';
+        const DB_NAME = 'FluxProDB_V2'; // Bumped DB name for clean slate with new UI
         const STORE_NAME = 'generations';
 
         function initDB() {
@@ -234,8 +292,8 @@
             request.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    const store = db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-                    store.createIndex("date", "date", { unique: false });
+                    db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true })
+                      .createIndex("date", "date", { unique: false });
                 }
             };
             request.onsuccess = (e) => {
@@ -248,29 +306,25 @@
         // --- UI Interactions ---
 
         function selectModel(id) {
-            // Update State
             state.model = id;
             state.modelName = endpoints[id].name;
             
-            // Update Sidebar UI
-            document.querySelectorAll('aside button').forEach(b => {
-                b.className = "w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 transition-colors";
-            });
-            const activeBtn = document.getElementById(`nav-${id}`);
-            if(activeBtn) {
-                activeBtn.className = "w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600/10 text-indigo-400 border border-indigo-500/20";
-            }
+            // Update Sidebar UI classes
+            document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`nav-${id}`).classList.add('active');
 
-            // Update Label
-            document.getElementById('activeModelLabel').innerText = state.modelName;
+            document.getElementById('activeModelLabel').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-accent inline-block"></span> ${state.modelName}`;
 
-            // Handle Img2Img UI
             const imgContainer = document.getElementById('imgInputContainer');
+            const imgPlaceholder = document.getElementById('imgInputPlaceholder');
+            
             if (endpoints[id].needsImage) {
                 imgContainer.classList.remove('hidden');
+                imgPlaceholder.classList.add('hidden');
             } else {
                 imgContainer.classList.add('hidden');
-                state.base64Input = null; // Clear if switching away
+                imgPlaceholder.classList.remove('hidden');
+                state.base64Input = null;
                 document.getElementById('imageUpload').value = "";
                 resetUploadPreview();
             }
@@ -284,14 +338,10 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    state.base64Input = e.target.result; // Store full data URI
-                    
-                    // Update Preview
+                    state.base64Input = e.target.result;
                     const preview = document.getElementById('previewUpload');
-                    const placeholder = document.getElementById('uploadPlaceholder');
                     preview.src = e.target.result;
                     preview.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -299,7 +349,6 @@
 
         function resetUploadPreview() {
             document.getElementById('previewUpload').classList.add('hidden');
-            document.getElementById('uploadPlaceholder').classList.remove('hidden');
         }
 
         // --- Generation Logic ---
@@ -310,54 +359,34 @@
             const width = document.getElementById('widthInput').value;
             const height = document.getElementById('heightInput').value;
             const btn = document.getElementById('genBtn');
+            const shimmer = document.getElementById('promptShimmer');
 
-            // Validation
-            if (!prompt) {
-                alert("Please write a prompt first!");
-                return;
-            }
+            if (!prompt) { alert("Please write a prompt first!"); return; }
             if (endpoints[state.model].needsImage && !state.base64Input) {
-                alert("This model requires a source image. Please upload one.");
-                return;
+                alert("This model requires a source image."); return;
             }
 
-            // UI Loading State
+            // Set Loading UI
             btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Processing...';
+            shimmer.classList.remove('opacity-0'); // Activate shimmer
+            
             document.getElementById('placeholderState').classList.add('hidden');
             document.getElementById('loadingState').classList.remove('hidden');
             document.getElementById('resultImage').classList.add('hidden');
             document.getElementById('resultActions').classList.add('hidden');
 
             try {
-                // Determine Endpoint
                 const config = endpoints[state.model];
                 let fullUrl = `${API_BASE}${config.url}`;
                 
-                // Build Query Parameters (Default behavior for this API seems to be GET based on user example)
-                // However, for Img2Img or complex params, we might need POST. 
-                // Given the constraints, we will attempt to construct a URL with params for standard models
-                // For Img2Img, we likely need to POST JSON if the worker supports it, otherwise GET will fail with base64.
-                // *Assumption*: The worker handles Query Params for text-to-image.
-                
-                const params = new URLSearchParams({
-                    prompt: prompt,
-                    width: width,
-                    height: height
-                });
-
+                const params = new URLSearchParams({ prompt: prompt, width: width, height: height });
                 if (negPrompt) params.append('negative_prompt', negPrompt);
                 
                 let fetchOptions = { method: 'GET' };
 
-                // Special handling for Img2Img (Must use POST usually, but if user API is strict...)
-                // We will try standard POST for everything if possible, but user provided GET example.
-                // Let's try to pass parameters in URL for text models, and hope Img2Img accepts body or handle error.
-                
-                // Strategy: Use GET for text models (proven). Use POST for Img2Img.
-                
                 if (config.needsImage) {
-                    // Switch to POST for image upload
                     fetchOptions = {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -366,12 +395,9 @@
                             negative_prompt: negPrompt,
                             width: parseInt(width),
                             height: parseInt(height),
-                            image: state.base64Input, // The worker likely expects this field
-                            image_b64: state.base64Input // Sending both common keys just in case
+                            image: state.base64Input
                         })
                     };
-                    // Clean URL for POST
-                    fullUrl = `${API_BASE}${config.url}`; 
                 } else {
                     fullUrl += `?${params.toString()}`;
                 }
@@ -379,30 +405,33 @@
                 const response = await fetch(fullUrl, fetchOptions);
                 const data = await response.json();
 
-                if (data.success || data.image) {
-                    const finalImage = data.image; // Should be Base64 string
-                    
-                    // Display
+                if (data.success) {
+                    const imageUrl = data.url || data.image;
+                    state.currentResultUrl = imageUrl;
+
                     const imgEl = document.getElementById('resultImage');
-                    imgEl.src = finalImage;
-                    imgEl.onload = () => {
+                    // Pre-load image before showing
+                    const tempImg = new Image();
+                    tempImg.onload = () => {
+                        imgEl.src = imageUrl;
                         document.getElementById('loadingState').classList.add('hidden');
                         imgEl.classList.remove('hidden');
                         document.getElementById('resultActions').classList.remove('hidden');
+                        document.getElementById('hdLink').href = imageUrl;
+                        shimmer.classList.add('opacity-0'); // Stop shimmer
                     };
+                     tempImg.onerror = () => { throw new Error("Failed to load resulting image URL"); }
+                    tempImg.src = imageUrl;
 
-                    // Setup Download
-                    const dlLink = document.getElementById('downloadLink');
-                    dlLink.href = finalImage;
-                    dlLink.download = `flux-${Date.now()}.png`;
-
-                    // Save to History
                     saveToHistory({
                         id: Date.now(),
-                        image: finalImage,
+                        image: imageUrl,
+                        delete_url: data.delete_url || null,
                         prompt: prompt,
                         model: state.modelName,
-                        date: new Date()
+                        date: new Date(),
+                        width: data.width,
+                        height: data.height
                     });
 
                 } else {
@@ -414,9 +443,29 @@
                 alert("Error: " + err.message);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('placeholderState').classList.remove('hidden');
+                shimmer.classList.add('opacity-0');
             } finally {
                 btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                btn.innerHTML = '<span class="relative z-10">Generate</span> <i class="fa-solid fa-wand-magic-sparkles relative z-10 group-hover:rotate-12 transition-transform"></i><div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>';
+            }
+        }
+
+        async function downloadCurrentImage() {
+            if (!state.currentResultUrl) return;
+            try {
+                const response = await fetch(state.currentResultUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `flux-gen-${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (e) {
+                window.open(state.currentResultUrl, '_blank');
             }
         }
 
@@ -425,21 +474,16 @@
         function saveToHistory(record) {
             const tx = db.transaction(STORE_NAME, "readwrite");
             tx.objectStore(STORE_NAME).add(record);
-            tx.oncomplete = () => {
-                loadHistory();
-                updateStorageInfo();
-            };
+            tx.oncomplete = () => { loadHistory(); updateStorageInfo(); };
         }
 
         function loadHistory() {
             const tx = db.transaction(STORE_NAME, "readonly");
             const store = tx.objectStore(STORE_NAME);
             const index = store.index("date");
-            
             const grid = document.getElementById('historyGrid');
-            grid.innerHTML = ''; // Clear
+            grid.innerHTML = ''; 
 
-            // Iterate backwards
             index.openCursor(null, 'prev').onsuccess = (e) => {
                 const cursor = e.target.result;
                 if (cursor) {
@@ -451,41 +495,44 @@
 
         function renderCard(data, container) {
             const div = document.createElement('div');
-            div.className = "group relative aspect-square bg-slate-800 rounded-xl overflow-hidden border border-slate-700 cursor-pointer";
+            // Updated card styling for new theme
+            div.className = "group relative aspect-square bg-[#0a0a0a] rounded-xl overflow-hidden border border-zinc-800 cursor-pointer shadow-md hover:shadow-accent/20 transition-all hover:border-accent/50";
             div.onclick = () => loadFromHistory(data);
 
+            const imgSrc = data.image;
+
             div.innerHTML = `
-                <img src="${data.image}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
-                    <span class="text-xs text-indigo-300 font-bold mb-1">${data.model}</span>
-                    <p class="text-xs text-white line-clamp-2 opacity-80">${data.prompt}</p>
+                <img src="${imgSrc}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:opacity-50" loading="lazy">
+                 <div class="absolute inset-0 bg-gradient-to-t from-[#000] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] text-accent font-bold uppercase tracking-wider">${data.model}</span>
+                         <span class="text-[10px] text-zinc-500 font-mono">${data.width}x${data.height}</span>
+                    </div>
+                    <p class="text-xs text-zinc-300 line-clamp-2">${data.prompt}</p>
                 </div>
             `;
             container.appendChild(div);
         }
 
         function loadFromHistory(data) {
-            // Restore Image to main view
+            state.currentResultUrl = data.image;
             const imgEl = document.getElementById('resultImage');
             imgEl.src = data.image;
             imgEl.classList.remove('hidden');
             document.getElementById('placeholderState').classList.add('hidden');
             document.getElementById('resultActions').classList.remove('hidden');
+            document.getElementById('hdLink').href = data.image;
             
-            // Setup Download
-            const dlLink = document.getElementById('downloadLink');
-            dlLink.href = data.image;
-            dlLink.download = `flux-history-${data.id}.png`;
+            if(window.innerWidth < 768) {
+                document.getElementById('viewport').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function clearHistory() {
-            if(confirm("Clear all generation history?")) {
+            if(confirm("Are you sure you want to delete all history?")) {
                 const tx = db.transaction(STORE_NAME, "readwrite");
                 tx.objectStore(STORE_NAME).clear();
-                tx.oncomplete = () => {
-                    loadHistory();
-                    updateStorageInfo();
-                };
+                tx.oncomplete = () => { loadHistory(); updateStorageInfo(); };
             }
         }
 
@@ -493,25 +540,11 @@
             if (navigator.storage && navigator.storage.estimate) {
                 const estimate = await navigator.storage.estimate();
                 const usedMB = (estimate.usage / (1024 * 1024)).toFixed(1);
-                document.getElementById('storage-status').innerHTML = `<i class="fa-solid fa-database mr-1"></i> Storage: ${usedMB} MB`;
+                document.getElementById('storage-status').innerHTML = `<i class="fa-solid fa-database mr-2"></i>${usedMB} MB Used`;
             }
         }
 
-        // Init
         window.onload = initDB;
-
-        // Add Loading keyframe animation
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = `
-            @keyframes loading {
-                0% { transform: translateX(-100%); }
-                100% { transform: translateX(200%); }
-            }
-            .animate-fade-in { animation: fadeIn 0.3s ease-in; }
-            @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        `;
-        document.head.appendChild(styleSheet);
-
     </script>
 </body>
 </html>
