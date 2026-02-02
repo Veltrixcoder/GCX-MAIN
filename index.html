@@ -2,154 +2,193 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Veltrix AI Image Lab</title>
+<title>Veltrix AI — Image Forge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg:#070a12;
+  --card:#0f1628;
+  --neon:#6cf2ff;
+  --accent:#7c7cff;
+}
+* { box-sizing:border-box; }
 body {
-  margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  background: #0b0f1a;
-  color: white;
+  margin:0;
+  font-family:Inter,system-ui;
+  background:radial-gradient(circle at top,#111c3a,#070a12 70%);
+  color:white;
+  overflow-x:hidden;
 }
 header {
-  padding: 16px;
-  background: #12182b;
-  font-size: 22px;
-  font-weight: bold;
+  padding:20px;
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:.5px;
+  text-align:center;
+  background:linear-gradient(90deg,#6cf2ff,#7c7cff);
+  -webkit-background-clip:text;
+  color:transparent;
 }
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 16px;
+.app {
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+.panel {
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(20px);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 0 30px rgba(108,242,255,.15);
 }
 .controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
-input, select, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px;
+input,select,button {
+  padding:14px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  font-size:14px;
 }
-input, select {
-  flex: 1;
+input,select {
+  flex:1;
+  background:#0b1325;
+  color:white;
 }
 button {
-  background: #4f7cff;
-  color: white;
-  cursor: pointer;
+  background:linear-gradient(135deg,#6cf2ff,#7c7cff);
+  color:black;
+  font-weight:600;
+  cursor:pointer;
 }
-button:hover { opacity: .85 }
+button:hover { opacity:.9 }
 
+#result {
+  margin-top:20px;
+  text-align:center;
+}
 #result img {
-  max-width: 100%;
-  border-radius: 12px;
-  margin-top: 16px;
+  max-width:100%;
+  border-radius:16px;
+  box-shadow:0 0 40px rgba(108,242,255,.4);
 }
 
+.gallery {
+  margin-top:30px;
+}
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
-  margin-top: 20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
 }
 .grid img {
-  width: 100%;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform .2s;
+  width:100%;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.25s;
 }
-.grid img:hover {
-  transform: scale(1.05);
+.grid img:hover { transform:scale(1.07); }
+
+.loader {
+  width:40px;
+  height:40px;
+  border:4px solid rgba(255,255,255,.2);
+  border-top:4px solid var(--neon);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:20px auto;
 }
+@keyframes spin { to{transform:rotate(360deg)} }
+
 footer {
-  opacity: .6;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 20px;
+  opacity:.5;
+  text-align:center;
+  margin:30px 0 10px;
+  font-size:12px;
 }
 </style>
 </head>
 
 <body>
-<header>Veltrix AI Image Lab</header>
+<header>VELTRIX AI — IMAGE FORGE</header>
 
-<div class="container">
-  <div class="controls">
-    <input id="prompt" placeholder="Describe your image..." />
-    <select id="model">
-      <option value="flux-dev">FLUX Dev</option>
-      <option value="flux-klein">FLUX Klein</option>
-    </select>
-    <button onclick="generate()">Generate</button>
+<div class="app">
+  <div class="panel">
+    <div class="controls">
+      <input id="prompt" placeholder="Describe your vision...">
+      <select id="model">
+        <option value="flux-dev">FLUX Dev (Artistic)</option>
+        <option value="flux-klein">FLUX Klein (Realistic)</option>
+      </select>
+      <button onclick="generate()">Create</button>
+    </div>
+    <div id="result"></div>
   </div>
 
-  <div id="result"></div>
+  <div class="gallery">
+    <h3>Your Creations</h3>
+    <div class="grid" id="history"></div>
+  </div>
 
-  <h3>Your Gallery</h3>
-  <div class="grid" id="history"></div>
-
-  <footer>No login • Local cache • Powered by Veltrix AI</footer>
+  <footer>Local cache • No login • Veltrix AI</footer>
 </div>
 
 <script>
-const API_BASE = "https://wild-art-dca7.veltrix620.workers.dev/";
+const API = "https://wild-art-dca7.veltrix620.workers.dev/";
 
-function loadHistory() {
-  const data = JSON.parse(localStorage.getItem("aiHistory") || "[]");
-  const grid = document.getElementById("history");
-  grid.innerHTML = "";
-  data.reverse().forEach(item => {
-    const img = document.createElement("img");
-    img.src = item.image;
-    img.title = item.prompt;
-    img.onclick = () => showImage(item.image, item.prompt);
-    grid.appendChild(img);
+function clean(b64){
+  return b64.replace(/\s/g,"").replace(/[^A-Za-z0-9+/=]/g,"");
+}
+
+function loadHistory(){
+  const data = JSON.parse(localStorage.getItem("veltrix")||"[]");
+  const g = document.getElementById("history");
+  g.innerHTML="";
+  data.slice().reverse().forEach(i=>{
+    const img=document.createElement("img");
+    img.src=i.image;
+    img.title=i.prompt;
+    img.onclick=()=>show(i.image,i.prompt);
+    g.appendChild(img);
   });
 }
 
-function saveToHistory(item) {
-  let data = JSON.parse(localStorage.getItem("aiHistory") || "[]");
-  data.push(item);
-  if (data.length > 50) data.shift(); // limit
-  localStorage.setItem("aiHistory", JSON.stringify(data));
+function save(item){
+  let d=JSON.parse(localStorage.getItem("veltrix")||"[]");
+  d.push(item);
+  if(d.length>60)d.shift();
+  localStorage.setItem("veltrix",JSON.stringify(d));
   loadHistory();
 }
 
-function showImage(src, prompt) {
-  document.getElementById("result").innerHTML = `
-    <p><b>${prompt}</b></p>
-    <img src="${src}">
-  `;
+function show(src,p){
+  document.getElementById("result").innerHTML=
+    `<p><b>${p}</b></p><img src="${src}">`;
 }
 
-async function generate() {
-  const prompt = document.getElementById("prompt").value.trim();
-  if (!prompt) return alert("Enter a prompt");
-  const model = document.getElementById("model").value;
+async function generate(){
+  const p=document.getElementById("prompt").value.trim();
+  if(!p) return alert("Enter a prompt");
+  const m=document.getElementById("model").value;
+  document.getElementById("result").innerHTML=`<div class="loader"></div>`;
 
-  document.getElementById("result").innerHTML = "Generating...";
+  const url=`${API}${m}?prompt=${encodeURIComponent(p)}&width=1024&height=768`;
 
-  const url = `${API_BASE}${model}?prompt=${encodeURIComponent(prompt)}&width=1024&height=768`;
-
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (!data.image) throw "No image";
-
-    const img = `data:image/png;base64,${data.image}`;
-
-    showImage(img, prompt);
-    saveToHistory({ image: img, prompt, model, time: Date.now() });
-
-  } catch (e) {
-    document.getElementById("result").innerHTML = "Error generating image.";
+  try{
+    const r=await fetch(url);
+    const d=await r.json();
+    if(!d.image||d.image.length<100) throw "bad";
+    const img="data:image/png;base64,"+clean(d.image);
+    show(img,p);
+    save({image:img,prompt:p,model:m,time:Date.now()});
+  }catch{
+    document.getElementById("result").innerText="Generation failed.";
   }
 }
-
 loadHistory();
 </script>
 </body>
