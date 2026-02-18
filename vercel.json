@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "https://yt2ia.zeabur.app/$1" }
+    { "source": "/(.*)", "destination": "https://shashwatidr-we.hf.space/$1" }
   ]
 }
