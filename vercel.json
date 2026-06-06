@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/(.*)", "destination": "https://shashwatidr-we.hf.space/$1" }
-  ]
-}
