@@ -61,7 +61,7 @@ export function AdminPage() {
     e.preventDefault();
     setAuthLoading(true);
     try {
-      const res = await fetch("http://localhost:5001/api/auth/send-otp", {
+      const res = await fetch("https://api.gcx.co.in/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });
@@ -85,7 +85,7 @@ export function AdminPage() {
     if (!otp().trim()) return;
     setAuthLoading(true);
     try {
-      const res = await fetch("http://localhost:5001/api/auth/verify-otp", {
+      const res = await fetch("https://api.gcx.co.in/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ otp: otp().trim() })
@@ -212,19 +212,19 @@ export function AdminPage() {
 
     try {
       // Fetch cards
-      const cardsRes = await adminFetch("http://localhost:5001/api/cards");
+      const cardsRes = await adminFetch("https://api.gcx.co.in/api/cards");
       const cardsData = await cardsRes.json();
       setCards(cardsData);
       setLoadingCards(false);
 
       // Fetch payouts
-      const payoutsRes = await adminFetch("http://localhost:5001/api/payouts");
+      const payoutsRes = await adminFetch("https://api.gcx.co.in/api/payouts");
       const payoutsData = await payoutsRes.json();
       setPayouts(payoutsData);
       setLoadingPayouts(false);
 
       // Fetch reviews
-      const reviewsRes = await adminFetch("http://localhost:5001/api/reviews");
+      const reviewsRes = await adminFetch("https://api.gcx.co.in/api/reviews");
       const reviewsData = await reviewsRes.json();
       // Ensure reviews have received/sent timestamps fallback
       const processedReviews = reviewsData.map(r => {
@@ -239,7 +239,7 @@ export function AdminPage() {
       setLoadingReviews(false);
 
       // Fetch appeals
-      const appealsRes = await adminFetch("http://localhost:5001/api/appeals");
+      const appealsRes = await adminFetch("https://api.gcx.co.in/api/appeals");
       const appealsData = await appealsRes.json();
       setAppeals(appealsData);
       setLoadingAppeals(false);
@@ -262,7 +262,7 @@ export function AdminPage() {
       }
 
       try {
-        const res = await fetch("http://localhost:5001/api/auth/verify-session", {
+        const res = await fetch("https://api.gcx.co.in/api/auth/verify-session", {
           headers: { "Authorization": `Bearer ${storedToken}` }
         });
         const data = await res.json();
@@ -331,14 +331,14 @@ export function AdminPage() {
     e.preventDefault();
     if (!newCardName() || !newCardImg() || !newCardTag()) return;
     try {
-      const res = await adminFetch("http://localhost:5001/api/cards", {
+      const res = await adminFetch("https://api.gcx.co.in/api/cards", {
         method: "POST",
         body: JSON.stringify({ name: newCardName(), img: newCardImg(), tag: newCardTag(), glow: newCardGlow() })
       });
       if (res.ok) {
         showNotification("Card brand successfully saved.");
         setNewCardName("");
-        const data = await adminFetch("http://localhost:5001/api/cards");
+        const data = await adminFetch("https://api.gcx.co.in/api/cards");
         setCards(await data.json());
       } else {
         const err = await res.json();
@@ -352,10 +352,10 @@ export function AdminPage() {
   const handleDeleteCard = async (id) => {
     if (!confirm("Are you sure you want to delete this card brand and all its rates?")) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/cards/${id}`, { method: "DELETE" });
+      const res = await adminFetch(`https://api.gcx.co.in/api/cards/${id}`, { method: "DELETE" });
       if (res.ok) {
         showNotification("Card brand successfully deleted.");
-        const data = await adminFetch("http://localhost:5001/api/cards");
+        const data = await adminFetch("https://api.gcx.co.in/api/cards");
         setCards(await data.json());
       }
     } catch (err) {
@@ -367,7 +367,7 @@ export function AdminPage() {
   const handleAddVariant = async (cardId) => {
     if (!newVariantName()) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/cards/${cardId}/variants`, {
+      const res = await adminFetch(`https://api.gcx.co.in/api/cards/${cardId}/variants`, {
         method: "POST",
         body: JSON.stringify({
           name: newVariantName(),
@@ -381,7 +381,7 @@ export function AdminPage() {
         setNewVariantInrRate("");
         setNewVariantUsdtRate("");
         setAddingVariantCardId(null);
-        const data = await adminFetch("http://localhost:5001/api/cards");
+        const data = await adminFetch("https://api.gcx.co.in/api/cards");
         setCards(await data.json());
       }
     } catch (err) {
@@ -392,7 +392,7 @@ export function AdminPage() {
   const handleUpdateVariant = async (variantId) => {
     if (!editingVariantName()) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/variants/${variantId}`, {
+      const res = await adminFetch(`https://api.gcx.co.in/api/variants/${variantId}`, {
         method: "PUT",
         body: JSON.stringify({
           name: editingVariantName(),
@@ -403,7 +403,7 @@ export function AdminPage() {
       if (res.ok) {
         showNotification("Variant updated.");
         setEditingVariantId(null);
-        const data = await adminFetch("http://localhost:5001/api/cards");
+        const data = await adminFetch("https://api.gcx.co.in/api/cards");
         setCards(await data.json());
       }
     } catch (err) {
@@ -414,10 +414,10 @@ export function AdminPage() {
   const handleDeleteVariant = async (variantId) => {
     if (!confirm("Are you sure you want to delete this variant?")) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/variants/${variantId}`, { method: "DELETE" });
+      const res = await adminFetch(`https://api.gcx.co.in/api/variants/${variantId}`, { method: "DELETE" });
       if (res.ok) {
         showNotification("Variant removed.");
-        const data = await adminFetch("http://localhost:5001/api/cards");
+        const data = await adminFetch("https://api.gcx.co.in/api/cards");
         setCards(await data.json());
       }
     } catch (err) {
@@ -433,7 +433,7 @@ export function AdminPage() {
       return;
     }
     try {
-      const res = await adminFetch("http://localhost:5001/api/payouts", {
+      const res = await adminFetch("https://api.gcx.co.in/api/payouts", {
         method: "POST",
         body: JSON.stringify({
           submission_date: singleSubmissionDate(),
@@ -446,7 +446,7 @@ export function AdminPage() {
       });
       if (res.ok) {
         showNotification("Payout schedule logged!");
-        const data = await adminFetch("http://localhost:5001/api/payouts");
+        const data = await adminFetch("https://api.gcx.co.in/api/payouts");
         setPayouts(await data.json());
       }
     } catch (err) {
@@ -494,7 +494,7 @@ export function AdminPage() {
     }
 
     try {
-      const res = await adminFetch("http://localhost:5001/api/payouts/batch", {
+      const res = await adminFetch("https://api.gcx.co.in/api/payouts/batch", {
         method: "POST",
         body: JSON.stringify({ payouts: batchPayouts() })
       });
@@ -502,7 +502,7 @@ export function AdminPage() {
         const data = await res.json();
         showNotification(`Batch timeline success! Created ${data.count} items.`);
         setBatchPayouts([]);
-        const pData = await adminFetch("http://localhost:5001/api/payouts");
+        const pData = await adminFetch("https://api.gcx.co.in/api/payouts");
         setPayouts(await pData.json());
       }
     } catch (err) {
@@ -523,7 +523,7 @@ export function AdminPage() {
     }
     const payout = payouts().find(p => p.id === id);
     try {
-      const res = await adminFetch(`http://localhost:5001/api/payouts/${id}`, {
+      const res = await adminFetch(`https://api.gcx.co.in/api/payouts/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           submission_date: editingPayoutSubDate(),
@@ -537,7 +537,7 @@ export function AdminPage() {
       if (res.ok) {
         showNotification("Payout schedule dates updated.");
         setEditingPayoutId(null);
-        const data = await adminFetch("http://localhost:5001/api/payouts");
+        const data = await adminFetch("https://api.gcx.co.in/api/payouts");
         setPayouts(await data.json());
       }
     } catch (err) {
@@ -549,7 +549,7 @@ export function AdminPage() {
     const payout = payouts().find(p => p.id === id);
     if (!payout) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/payouts/${id}`, {
+      const res = await adminFetch(`https://api.gcx.co.in/api/payouts/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           submission_date: payout.submission_date,
@@ -562,7 +562,7 @@ export function AdminPage() {
       });
       if (res.ok) {
         showNotification("Status updated!");
-        const data = await adminFetch("http://localhost:5001/api/payouts");
+        const data = await adminFetch("https://api.gcx.co.in/api/payouts");
         setPayouts(await data.json());
       }
     } catch (err) {
@@ -573,10 +573,10 @@ export function AdminPage() {
   const handleDeletePayout = async (id) => {
     if (!confirm("Delete this timeline record?")) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/payouts/${id}`, { method: "DELETE" });
+      const res = await adminFetch(`https://api.gcx.co.in/api/payouts/${id}`, { method: "DELETE" });
       if (res.ok) {
         showNotification("Payout timeline record removed.");
-        const data = await adminFetch("http://localhost:5001/api/payouts");
+        const data = await adminFetch("https://api.gcx.co.in/api/payouts");
         setPayouts(await data.json());
       }
     } catch (err) {
@@ -624,7 +624,7 @@ export function AdminPage() {
     }
 
     try {
-      const res = await adminFetch("http://localhost:5001/api/reviews", {
+      const res = await adminFetch("https://api.gcx.co.in/api/reviews", {
         method: "POST",
         body: JSON.stringify({
           name: adminNewName(),
@@ -648,7 +648,7 @@ export function AdminPage() {
         setAdminNewGcReceivedDate("");
         setAdminNewPaymentSentDate("");
         setAdminNewRating(5);
-        const rRes = await adminFetch("http://localhost:5001/api/reviews");
+        const rRes = await adminFetch("https://api.gcx.co.in/api/reviews");
         const rData = await rRes.json();
         setReviews(rData.map(r => ({
           ...r,
@@ -667,7 +667,7 @@ export function AdminPage() {
       return;
     }
     try {
-      const res = await adminFetch(`http://localhost:5001/api/reviews/${id}`, {
+      const res = await adminFetch(`https://api.gcx.co.in/api/reviews/${id}`, {
         method: "PUT",
         body: JSON.stringify({
           name: editingReviewName(),
@@ -685,7 +685,7 @@ export function AdminPage() {
       if (res.ok) {
         showNotification("Review updated.");
         setEditingReviewId(null);
-        const rRes = await adminFetch("http://localhost:5001/api/reviews");
+        const rRes = await adminFetch("https://api.gcx.co.in/api/reviews");
         const rData = await rRes.json();
         setReviews(rData.map(r => ({
           ...r,
@@ -701,10 +701,10 @@ export function AdminPage() {
   const handleDeleteReview = async (id) => {
     if (!confirm("Permanently delete this testimonial?")) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/reviews/${id}`, { method: "DELETE" });
+      const res = await adminFetch(`https://api.gcx.co.in/api/reviews/${id}`, { method: "DELETE" });
       if (res.ok) {
         showNotification("Review removed.");
-        const rRes = await adminFetch("http://localhost:5001/api/reviews");
+        const rRes = await adminFetch("https://api.gcx.co.in/api/reviews");
         const rData = await rRes.json();
         setReviews(rData.map(r => ({
           ...r,
@@ -728,13 +728,13 @@ export function AdminPage() {
     }
 
     try {
-      const res = await adminFetch(`http://localhost:5001/api/appeals/${id}`, {
+      const res = await adminFetch(`https://api.gcx.co.in/api/appeals/${id}`, {
         method: "PUT",
         body: JSON.stringify({ status, adminNotes: notes })
       });
       if (res.ok) {
         showNotification(`Appeal status updated to ${status}.`);
-        const appRes = await adminFetch("http://localhost:5001/api/appeals");
+        const appRes = await adminFetch("https://api.gcx.co.in/api/appeals");
         setAppeals(await appRes.json());
         setShowAppealActionModal(false);
         setAppealActionTarget(null);
@@ -770,10 +770,10 @@ export function AdminPage() {
   const handleDeleteAppeal = async (id) => {
     if (!confirm("Delete this appeal log permanently?")) return;
     try {
-      const res = await adminFetch(`http://localhost:5001/api/appeals/${id}`, { method: "DELETE" });
+      const res = await adminFetch(`https://api.gcx.co.in/api/appeals/${id}`, { method: "DELETE" });
       if (res.ok) {
         showNotification("Appeal deleted successfully.");
-        const appRes = await adminFetch("http://localhost:5001/api/appeals");
+        const appRes = await adminFetch("https://api.gcx.co.in/api/appeals");
         setAppeals(await appRes.json());
       }
     } catch (err) {

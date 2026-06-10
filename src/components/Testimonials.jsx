@@ -8,7 +8,7 @@ export function Testimonials() {
   onSettled(() => {
     const fetchDbReviews = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/reviews");
+        const res = await fetch("https://api.gcx.co.in/api/reviews");
         if (res.ok) {
           const data = await res.json();
           // Normalize DB keys to match static ones
@@ -200,7 +200,7 @@ function TestimonialCard(props) {
   return (
     <div class="relative overflow-hidden liquid-glass rounded-[1.8rem] p-6 sm:p-8 w-[80vw] sm:w-[26vw] 2xl:w-[380px] shrink-0 border border-border/60 hover:border-border hover:bg-foreground/[0.02] transition-all duration-300 flex flex-col justify-between text-left">
       {/* Glow Orb background */}
-      <div 
+      <div
         class="absolute -top-24 -right-24 h-48 w-48 rounded-full blur-3xl opacity-30 pointer-events-none"
         style={{ background: `radial-gradient(circle, ${getGlowColor(props.t.tradeType)} 0%, transparent 70%)` }}
       />
@@ -232,7 +232,7 @@ function TestimonialCard(props) {
             </span>
             <span class="text-[10.5px] font-bold font-display text-foreground mt-0.5">{formatDate(props.t.gcReceivedDate)}</span>
           </div>
-          
+
           {/* Dashed line & Settlement Badge */}
           <div class="absolute left-[28%] right-[28%] top-1/2 -translate-y-1/2 flex items-center justify-center hidden xs:flex">
             <div class="w-full h-0 border-t border-dashed border-border/60" />
@@ -240,7 +240,7 @@ function TestimonialCard(props) {
               {diffDays() === 0 ? "⚡ Instant" : `${diffDays()}d Settlement`}
             </span>
           </div>
-          
+
           <div class="relative z-10 flex flex-col items-end text-right">
             <span class="text-[8px] font-mono font-bold uppercase text-emerald-400/90 tracking-wider flex items-center gap-1">
               Paid Out
@@ -256,8 +256,8 @@ function TestimonialCard(props) {
         <Show when={props.t.proofImageUrl}>
           <div class="mb-5">
             <p class="text-[8px] font-bold font-mono uppercase tracking-wider text-muted-foreground mb-2">Verification Certificate</p>
-            <a 
-              href={props.t.proofImageUrl} 
+            <a
+              href={props.t.proofImageUrl}
               onClick={(e) => {
                 e.preventDefault();
                 props.onZoom(props.t.proofImageUrl);
@@ -299,15 +299,15 @@ function TestimonialCard(props) {
                 when={props.t.avatarUrl}
                 fallback={(props.t.name || "").charAt(0)}
               >
-                <img 
-                  src={props.t.avatarUrl} 
+                <img
+                  src={props.t.avatarUrl}
                   alt={props.t.name}
                   class="h-full w-full rounded-full object-cover border border-border/60 shadow-md select-none pointer-events-none"
                   loading="lazy"
                 />
               </Show>
             </div>
-            
+
             {/* Details */}
             <div>
               <h4 class="font-bold text-xs font-display text-foreground">
@@ -323,11 +323,10 @@ function TestimonialCard(props) {
           <div class="flex flex-col items-end gap-0.5">
             <div class="flex items-center gap-1">
               <Show when={props.t.region}>
-                <span class={`text-[8px] font-black font-mono uppercase tracking-wider rounded-full px-2 py-0.5 border ${
-                  props.t.region === "US" 
-                    ? "text-sky-400 bg-sky-500/10 border-sky-500/20 shadow-sky-500/5" 
+                <span class={`text-[8px] font-black font-mono uppercase tracking-wider rounded-full px-2 py-0.5 border ${props.t.region === "US"
+                    ? "text-sky-400 bg-sky-500/10 border-sky-500/20 shadow-sky-500/5"
                     : "text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-rose-500/5"
-                }`}>
+                  }`}>
                   {props.t.region === "US" ? "🇺🇸 US" : "🇬🇧 UK"}
                 </span>
               </Show>

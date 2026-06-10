@@ -21,12 +21,12 @@ const imgMap = {
 const getCardImage = (imgSrc) => imgMap[imgSrc] || imgSrc;
 
 const fallbackBrands = [
-  { id: "amazon",   name: "Amazon",            img: "amazon",    tag: "Shopping", rate: "100 INR / 0.91 USDT", glow: "rgba(255, 153, 0, 0.4)",   variants: [{ name: "arena100", inr_rate: "100 INR", usdt_rate: "0.91 USDT" }] },
-  { id: "flipkart", name: "Flipkart",          img: "flipkart",  tag: "Shopping", rate: "90 INR",              glow: "rgba(40, 116, 240, 0.4)",   variants: [{ name: "e-Gift Voucher", inr_rate: "90 INR", usdt_rate: null }] },
-  { id: "roblox",   name: "Roblox",            img: "roblox",    tag: "Gaming",   rate: "88 USDT",             glow: "rgba(239, 68, 68, 0.4)",    variants: [{ name: "Gift Card", inr_rate: null, usdt_rate: "88 USDT" }] },
-  { id: "lol",      name: "League of Legends", img: "lol",       tag: "Gaming",   rate: "86 USDT",             glow: "rgba(197, 168, 128, 0.35)", variants: [{ name: "RP Gift Card", inr_rate: null, usdt_rate: "86 USDT" }] },
-  { id: "overwatch",name: "Overwatch 2",       img: "overwatch", tag: "Gaming",   rate: "84 USDT",             glow: "rgba(240, 100, 20, 0.4)",   variants: [{ name: "Coins Gift Card", inr_rate: null, usdt_rate: "84 USDT" }] },
-  { id: "sot",      name: "Sea of Thieves",    img: "sot",       tag: "Gaming",   rate: "82 USDT",             glow: "rgba(16, 185, 129, 0.4)",   variants: [{ name: "Coins Pack", inr_rate: null, usdt_rate: "82 USDT" }] },
+  { id: "amazon", name: "Amazon", img: "amazon", tag: "Shopping", rate: "100 INR / 0.91 USDT", glow: "rgba(255, 153, 0, 0.4)", variants: [{ name: "arena100", inr_rate: "100 INR", usdt_rate: "0.91 USDT" }] },
+  { id: "flipkart", name: "Flipkart", img: "flipkart", tag: "Shopping", rate: "90 INR", glow: "rgba(40, 116, 240, 0.4)", variants: [{ name: "e-Gift Voucher", inr_rate: "90 INR", usdt_rate: null }] },
+  { id: "roblox", name: "Roblox", img: "roblox", tag: "Gaming", rate: "88 USDT", glow: "rgba(239, 68, 68, 0.4)", variants: [{ name: "Gift Card", inr_rate: null, usdt_rate: "88 USDT" }] },
+  { id: "lol", name: "League of Legends", img: "lol", tag: "Gaming", rate: "86 USDT", glow: "rgba(197, 168, 128, 0.35)", variants: [{ name: "RP Gift Card", inr_rate: null, usdt_rate: "86 USDT" }] },
+  { id: "overwatch", name: "Overwatch 2", img: "overwatch", tag: "Gaming", rate: "84 USDT", glow: "rgba(240, 100, 20, 0.4)", variants: [{ name: "Coins Gift Card", inr_rate: null, usdt_rate: "84 USDT" }] },
+  { id: "sot", name: "Sea of Thieves", img: "sot", tag: "Gaming", rate: "82 USDT", glow: "rgba(16, 185, 129, 0.4)", variants: [{ name: "Coins Pack", inr_rate: null, usdt_rate: "82 USDT" }] },
 ];
 
 export function Brands() {
@@ -36,7 +36,7 @@ export function Brands() {
   onSettled(() => {
     const fetchBrands = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/cards");
+        const res = await fetch("https://api.gcx.co.in/api/cards");
         if (res.ok) {
           const data = await res.json();
           setBrands(data);

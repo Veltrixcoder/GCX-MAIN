@@ -7,7 +7,7 @@ export function ReviewsPage() {
   const [reviews, setReviews] = createSignal([]);
   const [loading, setLoading] = createSignal(true);
   const [showModal, setShowModal] = createSignal(false);
-  
+
   // Form state
   const [name, setName] = createSignal("");
   const [role, setRole] = createSignal("");
@@ -56,7 +56,7 @@ export function ReviewsPage() {
 
   const fetchReviews = async () => {
     try {
-      const res = await fetch("http://localhost:5001/api/reviews");
+      const res = await fetch("https://api.gcx.co.in/api/reviews");
       const data = await res.json();
       const processed = data.map(r => {
         const createdAt = r.created_at || new Date().toISOString();
@@ -119,7 +119,7 @@ export function ReviewsPage() {
     setSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:5001/api/reviews", {
+      const response = await fetch("https://api.gcx.co.in/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -169,7 +169,7 @@ export function ReviewsPage() {
       <div class="absolute inset-0 grid-bg pointer-events-none opacity-30" />
 
       <div class="relative mx-auto max-w-7xl px-4 z-10">
-        
+
         {/* Back Link */}
         <div class="mb-6 flex justify-start">
           <Link to="/" class="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition font-mono font-semibold">
@@ -327,9 +327,8 @@ export function ReviewsPage() {
                           <div class="flex flex-col items-end gap-1">
                             <div class="flex items-center gap-1.5">
                               <Show when={r.region}>
-                                <span class={`text-[8px] font-black font-mono uppercase tracking-wider rounded-full px-2 py-0.5 border ${
-                                  r.region === "US" ? "text-sky-400 bg-sky-500/10 border-sky-500/20" : "text-rose-400 bg-rose-500/10 border-rose-500/20"
-                                }`}>
+                                <span class={`text-[8px] font-black font-mono uppercase tracking-wider rounded-full px-2 py-0.5 border ${r.region === "US" ? "text-sky-400 bg-sky-500/10 border-sky-500/20" : "text-rose-400 bg-rose-500/10 border-rose-500/20"
+                                  }`}>
                                   {r.region === "US" ? "🇺🇸 US" : "🇬🇧 UK"}
                                 </span>
                               </Show>
@@ -456,11 +455,10 @@ export function ReviewsPage() {
                           <button
                             type="button"
                             onClick={() => setRegion(reg === "None" ? "" : reg)}
-                            class={`flex-1 py-2.5 rounded-xl border font-mono text-xs font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
-                              (reg === "None" ? !region() : region() === reg)
+                            class={`flex-1 py-2.5 rounded-xl border font-mono text-xs font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${(reg === "None" ? !region() : region() === reg)
                                 ? "bg-primary/20 text-primary border-primary/50 font-extrabold"
                                 : "bg-foreground/[0.02] text-muted-foreground border-border/80 hover:bg-foreground/[0.04]"
-                            }`}
+                              }`}
                           >
                             {reg === "US" ? "🇺🇸 US Badge" : reg === "UK" ? "🇬🇧 UK Badge" : "❌ No Badge"}
                           </button>
