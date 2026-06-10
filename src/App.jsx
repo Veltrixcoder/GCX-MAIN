@@ -1,62 +1,26 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Marquee from './components/Marquee';
-import Brands from './components/Brands';
-import HowItWorks from './components/HowItWorks';
-import Payouts from './components/Payouts';
-import CryptoToINR from './components/CryptoToINR';
-import Testimonials from './components/Testimonials';
-import FAQ from './components/FAQ';
-import CTA from './components/CTA';
-import Footer from './components/Footer';
+import { Switch, Match } from "solid-js";
+import { currentPath } from "./components/router";
+import LandingPage from "./pages/LandingPage";
+import ReviewsPage from "./pages/ReviewsPage";
+import AppealPage from "./pages/AppealPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
-    <div className="relative min-h-screen bg-background text-foreground font-sans antialiased selection:bg-primary/30 selection:text-white">
-      <style>{`
-        .liquid-glass {
-          backdrop-filter: blur(24px) saturate(190%) !important;
-          -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
-        }
-        .glass {
-          backdrop-filter: blur(24px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-        }
-      `}</style>
-      {/* Navigation Header */}
-      <Navbar />
-
-      {/* Hero Section */}
-      <Hero />
-
-      {/* Feature Marquee */}
-      <Marquee />
-
-      {/* Brands Cards */}
-      <Brands />
-
-      {/* How It Works Section */}
-      <HowItWorks />
-
-      {/* Payout Options */}
-      <Payouts />
-
-      {/* Crypto to INR Offramp Section */}
-      <CryptoToINR />
-
-      {/* Testimonials Reviews Section */}
-      <Testimonials />
-
-      {/* FAQ Accordion Section */}
-      <FAQ />
-
-      {/* CTA Section */}
-      <CTA />
-
-      {/* Page Footer */}
-      <Footer />
-    </div>
+    <Switch fallback={<div class="min-h-screen bg-background text-foreground flex items-center justify-center font-mono">404 - Page Not Found</div>}>
+      <Match when={currentPath() === "/"}>
+        <LandingPage />
+      </Match>
+      <Match when={currentPath() === "/reviews" || currentPath() === "/review"}>
+        <ReviewsPage />
+      </Match>
+      <Match when={currentPath() === "/appeal"}>
+        <AppealPage />
+      </Match>
+      <Match when={currentPath() === "/internal/staff/admin"}>
+        <AdminPage />
+      </Match>
+    </Switch>
   );
 }
 

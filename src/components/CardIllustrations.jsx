@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 // Import the high-fidelity 3D PNG assets
-import amazonCardImg from '../assets/card-amazon-pkV6XfjL.png';
-import flipkartCardImg from '../assets/card-flipkart-SeEfOOvb.png';
-import robloxCardImg from '../assets/card-roblox-Cn_R-R5S.png';
-import lolCardImg from '../assets/card-lol-eD770gql.png';
-import overwatchCardImg from '../assets/overwatch2.png';
-import sotCardImg from '../assets/sot.png';
+import amazonCardImg from '../assets/images/card-amazon-pkV6XfjL.png';
+import flipkartCardImg from '../assets/images/card-flipkart-SeEfOOvb.png';
+import robloxCardImg from '../assets/images/card-roblox-Cn_R-R5S.png';
+import lolCardImg from '../assets/images/card-lol-eD770gql.png';
+import overwatchCardImg from '../assets/images/overwatch2.png';
+import sotCardImg from '../assets/images/sot.png';
 
 const CARDS_DATA = [
   {

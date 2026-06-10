@@ -1,34 +1,34 @@
-import React from 'react';
+import { For } from "solid-js";
 
-import amazonCardImg from '../assets/card-amazon-pkV6XfjL.png';
-import flipkartCardImg from '../assets/card-flipkart-SeEfOOvb.png';
-import robloxCardImg from '../assets/card-roblox-Cn_R-R5S.png';
-import lolCardImg from '../assets/card-lol-eD770gql.png';
-import overwatchCardImg from '../assets/overwatch2.png';
-import sotCardImg from '../assets/sot.png';
-import logoImg from '../assets/logo.png';
+import amazonCardImg from "../assets/images/card-amazon-pkV6XfjL.png";
+import flipkartCardImg from "../assets/images/card-flipkart-SeEfOOvb.png";
+import robloxCardImg from "../assets/images/card-roblox-Cn_R-R5S.png";
+import lolCardImg from "../assets/images/card-lol-eD770gql.png";
+import overwatchCardImg from "../assets/images/overwatch2.png";
+import sotCardImg from "../assets/images/sot.png";
+import logoImg from "../assets/images/logo.png";
 
 const CARDS = [
-  { id: 'amazon',    name: 'Amazon',            img: amazonCardImg,   glow: '#ff9900' },
-  { id: 'flipkart',  name: 'Flipkart',          img: flipkartCardImg, glow: '#2874f0' },
-  { id: 'roblox',    name: 'Roblox',            img: robloxCardImg,   glow: '#ef4444' },
-  { id: 'lol',       name: 'League of Legends', img: lolCardImg,      glow: '#c5a880' },
-  { id: 'overwatch', name: 'Overwatch 2',       img: overwatchCardImg,glow: '#f06414' },
-  { id: 'sot',       name: 'Sea of Thieves',    img: sotCardImg,      glow: '#10b981' },
+  { id: "amazon",    name: "Amazon",            img: amazonCardImg,   glow: "#ff9900" },
+  { id: "flipkart",  name: "Flipkart",          img: flipkartCardImg, glow: "#2874f0" },
+  { id: "roblox",    name: "Roblox",            img: robloxCardImg,   glow: "#ef4444" },
+  { id: "lol",       name: "League of Legends", img: lolCardImg,      glow: "#c5a880" },
+  { id: "overwatch", name: "Overwatch 2",       img: overwatchCardImg,glow: "#f06414" },
+  { id: "sot",       name: "Sea of Thieves",    img: sotCardImg,      glow: "#10b981" },
 ];
 
 const N = CARDS.length;
-const DURATION = 22; // Seconds for full cycle (reverted to original speed)
+const DURATION = 22; // Seconds for full cycle
 
 export default function RevolvingCards() {
   return (
     <div 
-      className="revolving-cards-container"
+      class="revolving-cards-container"
       style={{
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        position: "relative",
+        display: "flex",
+        "align-items": "center",
+        "justify-content": "center",
       }}
     >
 
@@ -46,7 +46,6 @@ export default function RevolvingCards() {
           max-width: 100%;
           height: var(--container-size);
         }
-
         @media (min-width: 1600px) {
           .revolving-cards-container {
             --orbit-radius: 190px;
@@ -58,7 +57,6 @@ export default function RevolvingCards() {
             --container-size: 530px;
           }
         }
-
         @media (max-width: 1024px) {
           .revolving-cards-container {
             --orbit-radius: 18vw;
@@ -70,7 +68,6 @@ export default function RevolvingCards() {
             --container-size: 50vw;
           }
         }
-
         @media (max-width: 768px) {
           .revolving-cards-container {
             --orbit-radius: 26vw;
@@ -82,18 +79,16 @@ export default function RevolvingCards() {
             --container-size: 75vw;
           }
         }
-
-        /* ── Orbit track: spins forward around its center ── */
+        /* Orbit track: spins forward around its center */
         @keyframes orbitSpin {
           from { transform: translate(-50%, -50%) rotate(0deg); }
           to   { transform: translate(-50%, -50%) rotate(360deg); }
         }
-        /* ── Each card counter-spins so it remains vertical ── */
+        /* Each card counter-spins so it remains vertical */
         @keyframes cardFace {
           from { transform: rotate(0deg); }
           to   { transform: rotate(-360deg); }
         }
-
         .orbit-track {
           position: absolute;
           top: 50%;
@@ -137,106 +132,110 @@ export default function RevolvingCards() {
         }
       `}</style>
 
-      {/* ── Central guide ring ── */}
+      {/* Guide ring */}
       <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 'calc(var(--orbit-radius) * 2)',
-        height: 'calc(var(--orbit-radius) * 2)',
-        borderRadius: '50%',
-        border: '1.5px dashed rgba(255,255,255,0.06)',
-        pointerEvents: 'none',
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "calc(var(--orbit-radius) * 2)",
+        height: "calc(var(--orbit-radius) * 2)",
+        "border-radius": "50%",
+        border: "1.5px dashed rgba(255,255,255,0.06)",
+        "pointer-events": "none",
       }} />
 
-      {/* ── Rotating Track ── */}
-      <div className="orbit-track">
-        {CARDS.map((card, i) => {
-          const slotAngle = (360 / N) * i;
-          const slotStyle = {
-            transform: `rotate(${slotAngle}deg) translate(var(--orbit-radius)) rotate(${-slotAngle}deg)`,
-            position: 'absolute',
-            left: 'var(--card-offset-x)',
-            top: 'var(--card-offset-y)',
-          };
-          return (
-            <div key={card.id} className="orbit-slot" style={slotStyle}>
-              <div
-                className="card-face"
-                style={{
-                  animationDelay: `-${(DURATION / N) * i}s`,
-                }}
-              >
-                <img
-                  src={card.img}
-                  alt={card.name}
-                  className="card-img"
-                  style={{ filter: `drop-shadow(0 10px 24px ${card.glow}77)` }}
-                />
+      {/* Rotating Track */}
+      <div class="orbit-track">
+        <For each={CARDS}>
+          {(card, i) => {
+            const slotAngle = () => (360 / N) * i();
+            const slotStyle = () => ({
+              transform: `rotate(${slotAngle()}deg) translate(var(--orbit-radius)) rotate(${-slotAngle()}deg)`,
+              position: "absolute",
+              left: "var(--card-offset-x)",
+              top: "var(--card-offset-y)",
+            });
+            return (
+              <div class="orbit-slot" style={slotStyle()}>
+                <div
+                  class="card-face"
+                  style={{
+                    "animation-delay": `-${(DURATION / N) * i()}s`,
+                  }}
+                >
+                  <img
+                    src={card.img}
+                    alt={card.name}
+                    class="card-img"
+                    style={{ filter: `drop-shadow(0 10px 24px ${card.glow}77)` }}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          }}
+        </For>
       </div>
 
-      {/* ── Ambient Glow behind Orb ── */}
+      {/* Ambient Glow behind Orb */}
       <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 'calc(var(--core-size) * 1.5)',
-        height: 'calc(var(--core-size) * 1.5)',
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(14,165,233,0.38) 0%, transparent 70%)',
-        filter: 'blur(1.5vw)',
-        pointerEvents: 'none',
-        animation: 'gcxPulse 3s ease-in-out infinite',
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "calc(var(--core-size) * 1.5)",
+        height: "calc(var(--core-size) * 1.5)",
+        "border-radius": "50%",
+        background: "radial-gradient(circle, rgba(255,74,74,0.38) 0%, transparent 70%)",
+        filter: "blur(1.5vw)",
+        "pointer-events": "none",
+        animation: "gcxPulse 3s ease-in-out infinite",
       }} />
 
-      {/* ── Central GCX Core Logo (No sphere wrapper, larger size) ── */}
+      {/* Central GCX Core Logo */}
       <div style={{
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 10,
-        width: 'calc(var(--core-size) * 1.35)',
-        height: 'calc(var(--core-size) * 1.35)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        animation: 'gcxFloat 4s ease-in-out infinite',
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        "z-index": 10,
+        width: "calc(var(--core-size) * 1.35)",
+        height: "calc(var(--core-size) * 1.35)",
+        display: "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        animation: "gcxFloat 4s ease-in-out infinite",
       }}>
         <img
           src={logoImg}
           alt="GCX Logo"
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 4px 16px rgba(14,165,233,0.35)) drop-shadow(0 10px 24px rgba(0,0,0,0.5))'
+            width: "100%",
+            height: "100%",
+            "object-fit": "contain",
+            filter: "drop-shadow(0 4px 16px rgba(255,74,74,0.35)) drop-shadow(0 10px 24px rgba(0,0,0,0.5))"
           }}
         />
       </div>
 
       {/* Halo rings */}
-      {[1.3, 1.55].map((multiplier, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: `calc(var(--core-size) * ${multiplier})`,
-          height: `calc(var(--core-size) * ${multiplier})`,
-          borderRadius: '50%',
-          border: `1px solid rgba(14,165,233,${0.14 - i * 0.05})`,
-          pointerEvents: 'none',
-          zIndex: 9,
-          animation: `gcxHalo ${2.5 + i * 0.8}s ease-in-out infinite ${i * 0.5}s`,
-        }} />
-      ))}
+      <For each={[1.3, 1.55]}>
+        {(multiplier, i) => (
+          <div style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: `calc(var(--core-size) * ${multiplier})`,
+            height: `calc(var(--core-size) * ${multiplier})`,
+            "border-radius": "50%",
+            border: `1px solid rgba(255,74,74,${0.14 - i() * 0.05})`,
+            "pointer-events": "none",
+            "z-index": 9,
+            animation: `gcxHalo ${2.5 + i() * 0.8}s ease-in-out infinite ${i() * 0.5}s`,
+          }} />
+        )}
+      </For>
 
       <style>{`
         @keyframes gcxFloat {
