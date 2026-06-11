@@ -35,9 +35,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how" class="relative py-10 sm:py-14 border-t border-border/40 overflow-hidden">
-      {/* Background radial highlight */}
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[35vw] w-[35vw] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+    <section id="how" class="relative py-10 sm:py-14 border-t border-border/40 overflow-hidden bg-background">
       <div class="absolute inset-0 grid-bg pointer-events-none opacity-30" />
 
       <div class="relative mx-auto max-w-7xl px-4">
@@ -45,7 +43,7 @@ export function HowItWorks() {
         <div class="text-center mb-6 sm:mb-8 max-w-2xl mx-auto">
           <p class="text-[10px] font-bold font-mono uppercase tracking-widest text-primary mb-4">The Process</p>
           <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black font-display mb-5 tracking-tight leading-tight text-foreground">
-            How it <span class="text-gradient">works</span>
+            How it works
           </h2>
           <p class="text-muted-foreground text-sm sm:text-base md:text-lg font-sans">
             We act as a secure bridge between cardholders and buyers, taking care of the escrow and payout logistics.
@@ -57,22 +55,16 @@ export function HowItWorks() {
           <For each={STEPS}>
             {(step) => (
               <TiltCard
-                class="liquid-glass rounded-[2rem] p-8 h-full flex flex-col justify-between overflow-hidden transition-all duration-300 border border-border/60 group hover:border-border/80 hover:bg-foreground/[0.02]"
+                class="liquid-glass rounded-[2rem] p-8 h-full flex flex-col justify-between overflow-hidden transition-all duration-300 border border-border/60 group hover:border-border/85 hover:bg-[#121215]"
                 intensity={10}
               >
-                {/* Radial Glow on hover */}
-                <div
-                  class="absolute -top-20 -right-20 h-48 w-48 rounded-full blur-3xl opacity-10 group-hover:opacity-35 transition-opacity duration-500"
-                  style={{ background: step.borderGlow }}
-                />
-
                 <div class="relative flex flex-col h-full" style={{ "transform-style": "preserve-3d" }}>
                   {/* Top Segment: Step number + Icon */}
                   <div class="flex items-center justify-between mb-8" style={{ transform: "translateZ(30px)" }}>
                     <div class="h-12 w-12 rounded-xl bg-foreground/[0.03] border border-border flex items-center justify-center shadow-lg">
                       <Dynamic component={step.icon} class={step.iconClass} />
                     </div>
-                    <span class="text-3xl sm:text-4xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-br from-foreground/25 to-foreground/5 tracking-tight group-hover:from-primary group-hover:to-accent transition-all duration-500">
+                    <span class="text-3xl sm:text-4xl font-bold font-mono text-muted-foreground/30 tracking-tight group-hover:text-primary transition-all duration-500">
                       {step.num}
                     </span>
                   </div>

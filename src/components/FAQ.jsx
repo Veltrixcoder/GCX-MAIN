@@ -28,7 +28,7 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" class="relative py-10 sm:py-14 border-t border-border/40 overflow-hidden">
+    <section id="faq" class="relative py-10 sm:py-14 border-t border-border/40 overflow-hidden bg-background">
       <div class="absolute inset-0 grid-bg pointer-events-none opacity-40" />
       <div class="relative mx-auto max-w-4xl px-4">
         <div class="text-center mb-6 sm:mb-8">

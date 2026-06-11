@@ -3,19 +3,11 @@ import robloxCard from "../assets/images/card-roblox-Cn_R-R5S.png";
 
 export function CTA() {
   return (
-    <section id="start" class="relative py-10 sm:py-14 overflow-hidden">
-      {/* Background ambient lighting */}
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[42vw] w-[42vw] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
-
+    <section id="start" class="relative py-10 sm:py-14 overflow-hidden bg-background">
       <div class="mx-auto max-w-5xl px-4 relative z-10">
         <div class="relative overflow-hidden rounded-[2.5rem] p-8 sm:p-16 text-center liquid-glass border border-border/60 hover:border-border transition-colors duration-500 shadow-2xl">
           {/* Subtle grid overlay */}
           <div class="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-          
-          {/* Accent lighting spots inside CTA */}
-          <div class="absolute inset-0 [background:var(--gradient-brand)] opacity-10 animate-gradient pointer-events-none" />
-          <div class="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-primary/20 blur-[100px] pointer-events-none" />
-          <div class="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-accent/20 blur-[100px] pointer-events-none" />
 
           {/* 3D Decorative Floating Cards (peeking from edges) */}
           <img 
@@ -41,13 +33,13 @@ export function CTA() {
                 href="https://wa.me/919120138828"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-full sm:w-auto rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 hover:border-primary/45 text-primary backdrop-blur-md px-8 py-4 text-base font-bold transition-all duration-300 shadow-lg text-center cursor-pointer"
+                class="w-full sm:w-auto rounded-full bg-primary text-black hover:bg-accent px-8 py-4 text-base font-bold transition-all duration-300 shadow-lg text-center cursor-pointer"
               >
                 <span class="relative z-10">Cash out a card →</span>
               </a>
               <a
                 href="#brands"
-                class="w-full sm:w-auto rounded-xl liquid-glass border border-border px-8 py-4 text-base font-bold text-foreground hover:bg-foreground/[0.04] hover:border-border/80 transition-all duration-300 text-center shadow-sm"
+                class="w-full sm:w-auto rounded-xl border border-border px-8 py-4 text-base font-bold text-foreground hover:bg-foreground/[0.04] hover:border-border/80 transition-all duration-300 text-center shadow-sm"
               >
                 View rates
               </a>

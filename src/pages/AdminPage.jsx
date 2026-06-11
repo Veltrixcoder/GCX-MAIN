@@ -785,9 +785,6 @@ export function AdminPage() {
   // --- RENDER AUTHENTICATION VIEW ---
   return (
     <div class="min-h-screen bg-background text-foreground relative overflow-hidden font-sans">
-      {/* Background blobs */}
-      <div class="absolute top-0 right-1/4 h-[30vw] w-[30vw] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
-      <div class="absolute bottom-0 left-1/4 h-[30vw] w-[30vw] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
       <div class="absolute inset-0 grid-bg pointer-events-none opacity-25" />
 
       {/* Dynamic Floating Notifications */}
@@ -1097,10 +1094,10 @@ export function AdminPage() {
                       <div class="mt-6 border-t border-border/40 pt-6">
                         <span class="block text-[10px] font-mono font-bold uppercase text-muted-foreground mb-3 tracking-wider">Interactive Live Preview</span>
                         <div
-                          class="relative p-5 rounded-2xl border border-border transition-all duration-300 overflow-hidden flex flex-col justify-between h-36 bg-gradient-to-br from-card to-card/60"
+                          class="relative p-5 rounded-2xl border border-border transition-all duration-300 overflow-hidden flex flex-col justify-between h-36 bg-card"
                           style={{
-                            "box-shadow": `0 8px 30px -4px ${newCardGlow() ? newCardGlow() : "rgba(0,0,0,0)"}`,
-                            "border-color": newCardGlow() ? newCardGlow() : "var(--border)"
+                            "box-shadow": "none",
+                            "border-color": "var(--border)"
                           }}
                         >
                           <div class="absolute top-0 right-0 h-14 w-14 bg-foreground/[0.02] rounded-bl-2xl border-l border-b border-border/40 flex items-center justify-center text-[8px] font-bold font-mono text-primary uppercase tracking-widest">{newCardTag() || "Tag"}</div>
@@ -1139,8 +1136,8 @@ export function AdminPage() {
                               <div
                                 class="liquid-glass rounded-2xl p-6 border border-border/60 border-l-[3.5px] hover:border-border/80 transition flex flex-col justify-between gap-4 group"
                                 style={{
-                                  "border-left-color": activeGlow,
-                                  "box-shadow": `0 4px 24px -6px ${activeGlow}`
+                                  "border-left-color": "var(--primary)",
+                                  "box-shadow": "none"
                                 }}
                               >
                                 {/* Top Header Row of Card */}
@@ -1795,7 +1792,7 @@ export function AdminPage() {
                                   <Star
                                     size={18}
                                     class={`${star <= adminNewRating()
-                                      ? "fill-[var(--primary)] text-[var(--primary)] filter drop-shadow-[0_0_3px_rgba(14,165,233,0.4)]"
+                                      ? "fill-[var(--primary)] text-[var(--primary)]"
                                       : "text-muted-foreground/35"
                                       } transition-all duration-200`}
                                   />
@@ -1844,7 +1841,7 @@ export function AdminPage() {
                                         e.preventDefault();
                                         setAdminNewProofUrl("");
                                       }}
-                                      class="absolute top-1 right-1 p-1 bg-negative text-white rounded-full hover:bg-red-600 transition z-30 shadow-md cursor-pointer"
+                                      class="absolute top-1 right-1 p-1 bg-negative text-white rounded-full hover:bg-red-600 transition z-30 cursor-pointer"
                                     >
                                       <X size={10} />
                                     </button>
@@ -1867,7 +1864,7 @@ export function AdminPage() {
 
                         <button
                           type="submit"
-                          class="w-full rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 text-primary backdrop-blur-md font-bold py-2.5 mt-2 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                          class="w-full rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 text-primary backdrop-blur-md font-bold py-2.5 mt-2 transition flex items-center justify-center gap-1.5 cursor-pointer"
                         >
                           <Plus size={14} /> Add Client Review
                         </button>
@@ -1904,22 +1901,18 @@ export function AdminPage() {
                                 <div
                                   class="liquid-glass rounded-2xl p-6 border border-border/60 flex flex-col justify-between hover:border-border/80 transition-all duration-300 relative overflow-hidden text-left"
                                 >
-                                  <div
-                                    class="absolute -top-24 -right-24 h-48 w-48 rounded-full blur-3xl opacity-30 pointer-events-none"
-                                    style={{ background: `radial-gradient(circle, ${getGlowColor(review.trade_type)} 0%, transparent 70%)` }}
-                                  />
                                   <div class="absolute right-6 top-6 text-primary/[0.03] text-7xl select-none font-serif pointer-events-none font-black z-0">“</div>
 
                                   <Show
                                     when={editingReviewId() === review.id}
                                     fallback={
-                                      <div class="flex flex-col justify-between h-full z-10 w-full relative z-10">
+                                      <div class="flex flex-col justify-between h-full z-10 w-full relative">
                                         <div>
                                           <div class="flex justify-between items-start mb-4">
                                             <div class="flex items-center gap-1">
                                               <For each={[...Array(review.rating)]}>
                                                 {() => (
-                                                  <Star size={13} class="fill-[var(--primary)] text-[var(--primary)] filter drop-shadow-[0_0_2px_rgba(14,165,233,0.3)]" />
+                                                  <Star size={13} class="fill-[var(--primary)] text-[var(--primary)]" />
                                                 )}
                                               </For>
                                             </div>
@@ -1958,7 +1951,7 @@ export function AdminPage() {
                                                 onClick={() => setZoomedImgUrl(review.proof_image_url)}
                                                 class="flex items-center gap-3 p-2.5 rounded-xl bg-foreground/[0.015] border border-border/60 hover:border-primary/50 hover:bg-foreground/[0.03] transition-all duration-300 group cursor-pointer w-full text-left"
                                               >
-                                                <div class="relative h-20 w-20 shrink-0 rounded-lg overflow-hidden border border-border group-hover:border-primary/30 transition shadow-inner bg-black/40">
+                                                <div class="relative h-20 w-20 shrink-0 rounded-lg overflow-hidden border border-border group-hover:border-primary/30 transition bg-black/40">
                                                   <img src={review.proof_image_url} alt="Proof Thumbnail" class="h-full w-full object-cover group-hover:scale-105 transition duration-300" />
                                                   <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                                                     <ImageIcon size={16} class="text-white" />
@@ -1978,10 +1971,10 @@ export function AdminPage() {
                                           </Show>
 
                                           {/* Dates / Payout Timeline Widget */}
-                                          <div class="relative flex items-center justify-between mt-3 mb-6 px-4 py-2 rounded-2xl bg-foreground/[0.015] border border-border/40 shadow-inner">
+                                          <div class="relative flex items-center justify-between mt-3 mb-6 px-4 py-2 rounded-2xl bg-foreground/[0.015] border border-border/40">
                                             <div class="relative z-10 flex flex-col text-left">
                                               <span class="text-[8px] font-mono font-bold uppercase text-amber-400/90 tracking-wider flex items-center gap-1">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_6px_rgba(245,158,11,0.4)]" />
+                                                <span class="h-1.5 w-1.5 rounded-full bg-amber-400" />
                                                 Received
                                               </span>
                                               <span class="text-[10px] font-bold font-display text-foreground mt-0.5">{new Date(review.gc_received_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
@@ -1989,7 +1982,7 @@ export function AdminPage() {
 
                                             <div class="absolute left-[28%] right-[28%] top-1/2 -translate-y-1/2 flex items-center justify-center">
                                               <div class="w-full h-0 border-t border-dashed border-border/60" />
-                                              <span class="absolute px-2.5 py-0.5 rounded-full bg-background border border-border/60 text-[7px] font-mono font-bold text-muted-foreground uppercase whitespace-nowrap shadow-sm animate-pulse">
+                                              <span class="absolute px-2.5 py-0.5 rounded-full bg-background border border-border/60 text-[7px] font-mono font-bold text-muted-foreground uppercase whitespace-nowrap">
                                                 {diffDays === 0 ? "⚡ Instant" : `${diffDays}d Settlement`}
                                               </span>
                                             </div>
@@ -1997,7 +1990,7 @@ export function AdminPage() {
                                             <div class="relative z-10 flex flex-col items-end text-right">
                                               <span class="text-[8px] font-mono font-bold uppercase text-emerald-400/90 tracking-wider flex items-center gap-1">
                                                 Paid Out
-                                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.4)]" />
+                                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                                               </span>
                                               <span class="text-[10px] font-bold font-display text-foreground mt-0.5">{new Date(review.payment_sent_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
                                             </div>
@@ -2140,7 +2133,7 @@ export function AdminPage() {
                                                 <Star
                                                   size={16}
                                                   class={`${star <= editingReviewRating()
-                                                    ? "fill-[var(--primary)] text-[var(--primary)] filter drop-shadow-[0_0_2px_rgba(14,165,233,0.3)]"
+                                                    ? "fill-[var(--primary)] text-[var(--primary)]"
                                                     : "text-muted-foreground/45"
                                                     }`}
                                                 />

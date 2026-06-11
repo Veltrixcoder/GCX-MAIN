@@ -70,9 +70,6 @@ export function AppealPage() {
     <div class="relative min-h-screen pt-28 pb-16 overflow-hidden">
       <Navbar />
 
-      {/* Background ambient lighting */}
-      <div class="absolute top-1/4 left-1/4 -translate-y-1/2 h-[45vw] w-[45vw] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
-      <div class="absolute bottom-1/4 right-1/4 h-[40vw] w-[40vw] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
       <div class="absolute inset-0 grid-bg pointer-events-none opacity-30" />
 
       <div class="relative mx-auto max-w-2xl px-4 z-10">
@@ -87,8 +84,8 @@ export function AppealPage() {
         <Show
           when={!submitted()}
           fallback={
-            <div class="liquid-glass rounded-[2.5rem] p-8 sm:p-12 border border-border/60 text-center shadow-2xl relative overflow-hidden">
-              <div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+            <div class="liquid-glass rounded-[2.5rem] p-8 sm:p-12 border border-border/60 text-center shadow-2xl relative overflow-hidden bg-background">
+              <div class="absolute inset-x-0 top-0 h-[3px] bg-[#059669]" />
 
               <div class="mx-auto h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 shadow-sm">
                 <CheckCircle2 size={32} />
@@ -120,9 +117,9 @@ export function AppealPage() {
             </div>
           }
         >
-          <div class="liquid-glass rounded-[2.5rem] p-6 sm:p-10 border border-border/60 shadow-2xl relative overflow-hidden">
+          <div class="liquid-glass rounded-[2.5rem] p-6 sm:p-10 border border-border/60 shadow-2xl relative overflow-hidden bg-background">
             {/* Top visual accent */}
-            <div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <div class="absolute inset-x-0 top-0 h-[3px] bg-primary" />
 
             <div class="text-center mb-8">
               <div class="inline-flex items-center gap-2 rounded-full bg-red-500/10 border border-red-500/20 px-3 py-1 text-[10px] font-bold font-mono uppercase tracking-wider text-red-400 mb-4">

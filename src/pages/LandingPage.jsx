@@ -4,7 +4,6 @@ import Marquee from "../components/Marquee";
 import Brands from "../components/Brands";
 import HowItWorks from "../components/HowItWorks";
 import Payouts from "../components/Payouts";
-import CryptoToINR from "../components/CryptoToINR";
 import Testimonials from "../components/Testimonials";
 import FAQ from "../components/FAQ";
 import CTA from "../components/CTA";
@@ -41,9 +40,6 @@ export function LandingPage() {
 
       {/* Payout Options */}
       <Payouts />
-
-      {/* Crypto to INR Offramp Section */}
-      <CryptoToINR />
 
       {/* Testimonials Reviews Section */}
       <Testimonials />

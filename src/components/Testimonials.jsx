@@ -89,8 +89,6 @@ export function Testimonials() {
           }
         `}</style>
 
-        {/* Background ambient lighting */}
-        <div class="absolute top-1/2 right-1/4 -translate-y-1/2 h-[32vw] w-[32vw] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
         <div class="absolute inset-0 grid-bg pointer-events-none opacity-30" />
 
         <div class="relative mx-auto max-w-7xl px-4 mb-6 text-center">
@@ -199,11 +197,7 @@ function TestimonialCard(props) {
 
   return (
     <div class="relative overflow-hidden liquid-glass rounded-[1.8rem] p-6 sm:p-8 w-[80vw] sm:w-[26vw] 2xl:w-[380px] shrink-0 border border-border/60 hover:border-border hover:bg-foreground/[0.02] transition-all duration-300 flex flex-col justify-between text-left">
-      {/* Glow Orb background */}
-      <div
-        class="absolute -top-24 -right-24 h-48 w-48 rounded-full blur-3xl opacity-30 pointer-events-none"
-        style={{ background: `radial-gradient(circle, ${getGlowColor(props.t.tradeType)} 0%, transparent 70%)` }}
-      />
+
 
       <div class="relative z-10">
         {/* Rating + Quote Icon */}
@@ -211,7 +205,7 @@ function TestimonialCard(props) {
           <div class="flex items-center gap-1">
             <For each={Array.from({ length: props.t.rating || 5 }, (_, i) => i)}>
               {(i) => (
-                <Star size={15} class="fill-[var(--primary)] text-[var(--primary)] filter drop-shadow-[0_0_4px_rgba(14,165,233,0.4)]" />
+                <Star size={15} class="fill-[var(--primary)] text-[var(--primary)]" />
               )}
             </For>
           </div>
@@ -293,8 +287,7 @@ function TestimonialCard(props) {
         {/* Profile info */}
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2.5">
-            {/* Avatar Image */}
-            <div class="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-bold text-white shadow-md uppercase select-none shrink-0">
+            <div class="h-9 w-9 rounded-full bg-secondary border border-border flex items-center justify-center text-xs font-bold text-foreground shadow-md uppercase select-none shrink-0">
               <Show
                 when={props.t.avatarUrl}
                 fallback={(props.t.name || "").charAt(0)}
@@ -324,8 +317,8 @@ function TestimonialCard(props) {
             <div class="flex items-center gap-1">
               <Show when={props.t.region}>
                 <span class={`text-[8px] font-black font-mono uppercase tracking-wider rounded-full px-2 py-0.5 border ${props.t.region === "US"
-                    ? "text-sky-400 bg-sky-500/10 border-sky-500/20 shadow-sky-500/5"
-                    : "text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-rose-500/5"
+                  ? "text-sky-400 bg-sky-500/10 border-sky-500/20 shadow-sky-500/5"
+                  : "text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-rose-500/5"
                   }`}>
                   {props.t.region === "US" ? "🇺🇸 US" : "🇬🇧 UK"}
                 </span>

@@ -163,10 +163,7 @@ export function ReviewsPage() {
     <div class="relative min-h-screen pt-32 pb-24 overflow-hidden">
       <Navbar />
 
-      {/* Background ambient lighting */}
-      <div class="absolute top-1/4 left-1/4 -translate-y-1/2 h-[45vw] w-[45vw] rounded-full bg-primary/5 blur-[130px] pointer-events-none" />
-      <div class="absolute bottom-1/4 right-1/4 h-[40vw] w-[40vw] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
-      <div class="absolute inset-0 grid-bg pointer-events-none opacity-30" />
+      <div class="absolute inset-0 grid-bg pointer-events-none opacity-30 bg-background" />
 
       <div class="relative mx-auto max-w-7xl px-4 z-10">
 
@@ -222,19 +219,14 @@ export function ReviewsPage() {
                   })();
 
                   return (
-                    <div class="relative overflow-hidden liquid-glass rounded-[2rem] p-6 sm:p-8 border border-border/60 hover:border-border hover:bg-foreground/[0.01] transition-all duration-300 flex flex-col justify-between">
-                      {/* Glow Orb background */}
-                      <div
-                        class="absolute -top-24 -right-24 h-48 w-48 rounded-full blur-3xl opacity-30 pointer-events-none"
-                        style={{ background: `radial-gradient(circle, ${getGlowColor(r.trade_type)} 0%, transparent 70%)` }}
-                      />
+                    <div class="relative overflow-hidden liquid-glass rounded-[2rem] p-6 sm:p-8 border border-border/60 hover:border-border hover:bg-foreground/[0.01] transition-all duration-300 flex flex-col justify-between bg-background">
 
                       <div class="relative z-10">
                         {/* Rating + Quote Icon */}
                         <div class="flex items-center justify-between mb-4">
                           <div class="flex items-center gap-1">
                             <For each={Array.from({ length: r.rating || 5 }, (_, i) => i)}>
-                              {() => <Star size={14} class="fill-[var(--primary)] text-[var(--primary)] filter drop-shadow-[0_0_3px_rgba(255,74,74,0.3)]" />}
+                              {() => <Star size={14} class="fill-[var(--primary)] text-[var(--primary)]" />}
                             </For>
                           </div>
                           <Quote size={18} class="text-foreground/10" />
@@ -310,7 +302,7 @@ export function ReviewsPage() {
                         {/* Profile info */}
                         <div class="flex items-center justify-between">
                           <div class="flex items-center gap-3">
-                            <div class="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-bold text-white shadow-md uppercase">
+                            <div class="h-9 w-9 rounded-full bg-secondary border border-border flex items-center justify-center text-xs font-bold text-foreground shadow-md uppercase">
                               <Show
                                 when={r.avatar_url}
                                 fallback={(r.name || "").charAt(0)}
@@ -456,8 +448,8 @@ export function ReviewsPage() {
                             type="button"
                             onClick={() => setRegion(reg === "None" ? "" : reg)}
                             class={`flex-1 py-2.5 rounded-xl border font-mono text-xs font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${(reg === "None" ? !region() : region() === reg)
-                                ? "bg-primary/20 text-primary border-primary/50 font-extrabold"
-                                : "bg-foreground/[0.02] text-muted-foreground border-border/80 hover:bg-foreground/[0.04]"
+                              ? "bg-primary/20 text-primary border-primary/50 font-extrabold"
+                              : "bg-foreground/[0.02] text-muted-foreground border-border/80 hover:bg-foreground/[0.04]"
                               }`}
                           >
                             {reg === "US" ? "🇺🇸 US Badge" : reg === "UK" ? "🇬🇧 UK Badge" : "❌ No Badge"}
@@ -508,7 +500,7 @@ export function ReviewsPage() {
                           <Star
                             size={18}
                             class={star <= rating()
-                              ? "fill-[var(--primary)] text-[var(--primary)] filter drop-shadow-[0_0_3px_rgba(255,74,74,0.4)]"
+                              ? "fill-[var(--primary)] text-[var(--primary)]"
                               : "text-muted-foreground/40"
                             }
                           />

@@ -81,11 +81,6 @@ export function Brands() {
                 >
                   <TiltCard class="liquid-glass rounded-[2rem] p-6 h-full overflow-hidden flex flex-col justify-between border border-border/60 hover:border-border/90 hover:bg-foreground/[0.01] transition-all duration-300">
                     <div>
-                      <div
-                        class="absolute -top-24 -right-24 h-48 w-48 rounded-full blur-3xl opacity-40 pointer-events-none"
-                        style={{ background: b.glow }}
-                      />
-
                       {/* Image container */}
                       <div class="relative h-40 mb-4 grid place-items-center" style={{ transform: "translateZ(40px)" }}>
                         <img
@@ -102,7 +97,7 @@ export function Brands() {
                       <div class="relative" style={{ transform: "translateZ(20px)" }}>
                         <div class="flex items-center justify-between mb-3">
                           <h3 class="text-base sm:text-lg font-bold font-display text-foreground">{b.name}</h3>
-                          <span class="text-[8px] sm:text-[9px] font-bold font-mono uppercase tracking-wider text-muted-foreground/90 liquid-glass rounded-full px-2.5 py-1">
+                          <span class="text-[8px] sm:text-[9px] font-bold font-mono uppercase tracking-wider text-muted-foreground/90 bg-card rounded-full px-2.5 py-1 border border-border">
                             {b.tag}
                           </span>
                         </div>
@@ -147,7 +142,7 @@ export function Brands() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            class="mt-3.5 w-full text-center rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 hover:border-primary/45 text-primary backdrop-blur-md font-bold py-2 text-[11px] transition block"
+                            class="mt-3.5 w-full text-center rounded-full bg-primary text-black font-bold py-2 text-[11px] transition block hover:bg-accent"
                           >
                             Start Trade on WhatsApp ➔
                           </a>

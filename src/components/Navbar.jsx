@@ -49,7 +49,7 @@ export function Navbar() {
             {/* Desktop CTA */}
             <a
               href={getNavLink("#brands")}
-              class="hidden md:inline-flex rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 hover:border-primary/45 text-primary backdrop-blur-md px-5 py-2 text-sm font-semibold transition-all duration-300 shadow-sm cursor-pointer"
+              class="hidden md:inline-flex rounded-full bg-primary text-black hover:bg-accent px-5 py-2 text-sm font-bold transition-all duration-300 cursor-pointer shadow-sm"
             >
               Sell card
             </a>
@@ -111,7 +111,7 @@ export function Navbar() {
           <a
             href={getNavLink("#brands")}
             onClick={() => setIsOpen(false)}
-            class="w-full text-center rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 hover:border-primary/45 text-primary backdrop-blur-md py-2.5 text-xs font-bold transition block"
+            class="w-full text-center rounded-full bg-primary text-black hover:bg-accent py-2.5 text-xs font-bold transition block"
           >
             Sell Card
           </a>
