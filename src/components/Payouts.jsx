@@ -2,7 +2,7 @@ import { createSignal, onSettled, For, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { Link } from "./router";
 import { TiltCard } from "./TiltCard";
-import { Smartphone, Shield, Gift, RefreshCw, Clock } from "lucide-solid";
+import { Smartphone, Shield, Gift, RefreshCw, Clock, Upload, CheckCircle } from "lucide-solid";
 
 const PAYOUTS_DATA = [
   {
@@ -62,8 +62,8 @@ export function Payouts() {
       <div class="relative mx-auto max-w-7xl px-4">
         {/* Title */}
         <div class="text-center mb-6 sm:mb-8 max-w-2xl mx-auto">
-          <p class="text-[10px] font-bold font-mono uppercase tracking-widest text-primary mb-4">Payout options</p>
-          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black font-display mb-5 tracking-tight leading-tight text-foreground">
+          <p class="text-[10px] font-bold font-sans uppercase tracking-wider text-primary mb-4">Payout options</p>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-bold font-display mb-5 tracking-tight leading-tight text-foreground">
             Get paid your <span class="text-gradient">way</span>
           </h2>
           <p class="text-muted-foreground text-sm sm:text-base md:text-lg font-sans">
@@ -84,7 +84,7 @@ export function Payouts() {
                     <div class="h-12 w-12 rounded-xl bg-foreground/[0.03] border border-border flex items-center justify-center shadow-lg">
                       <Dynamic component={item.icon} class={item.iconClass} />
                     </div>
-                    <span class="text-3xl sm:text-4xl font-bold font-mono text-muted-foreground/30 tracking-tight group-hover:text-primary transition-all duration-500">
+                    <span class="text-3xl sm:text-4xl font-bold font-sans text-muted-foreground/20 tracking-tight group-hover:text-primary transition-all duration-500">
                       {item.num}
                     </span>
                   </div>
@@ -105,14 +105,14 @@ export function Payouts() {
         {/* Live Payout Tracker Section */}
         <div class="relative z-10 border-t border-border/40 pt-10">
           <div class="text-center mb-6 max-w-xl mx-auto">
-            <div class="inline-flex items-center gap-1.5 rounded-full bg-card border border-border px-3 py-1 text-[9px] font-bold font-mono uppercase tracking-wider text-primary mb-4 shadow-sm">
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-card border border-border px-3 py-1 text-[9px] font-bold font-sans uppercase tracking-wider text-primary mb-4 shadow-sm">
               <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
               Payout Schedules
             </div>
-            <h3 class="text-xl sm:text-3xl font-black font-display mb-3 tracking-tight text-foreground">
+            <h3 class="text-xl sm:text-3xl font-bold font-display mb-3 tracking-tight text-foreground">
               Payout <span class="text-gradient">Time Tracker</span>
             </h3>
-            <p class="text-xs sm:text-sm text-muted-foreground">
+            <p class="text-xs sm:text-sm text-muted-foreground font-sans">
               We process card submissions on scheduled runs. Submission opening dates and payout timelines for all accepted cards are listed below.
             </p>
           </div>
@@ -120,95 +120,92 @@ export function Payouts() {
           <Show when={loading()}>
             <div class="flex flex-col items-center justify-center py-10 space-y-2">
               <RefreshCw class="animate-spin text-primary h-6 w-6" />
-              <span class="text-[10px] text-muted-foreground font-mono">Loading schedules...</span>
+              <span class="text-[10px] text-muted-foreground font-sans">Loading schedules...</span>
             </div>
           </Show>
 
           <Show when={!loading() && livePayouts().length === 0}>
-            <div class="liquid-glass rounded-2xl p-8 text-center border border-border/60 text-xs text-muted-foreground">
+            <div class="liquid-glass rounded-2xl p-8 text-center border border-border/60 text-xs text-muted-foreground font-sans">
               No active payout schedules configured.
             </div>
           </Show>
 
           <Show when={!loading() && livePayouts().length > 0}>
             <div class="space-y-6">
-              {/* DESKTOP TABLE VIEW */}
-              <div class="hidden sm:block liquid-glass rounded-[2rem] border border-border/60 overflow-hidden shadow-2xl relative">
-                <div class="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
-                <div class="overflow-x-auto relative">
-                  <table class="w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr class="bg-foreground/[0.03] border-b border-border text-[9px] font-mono uppercase tracking-wider text-muted-foreground/85">
-                        <th class="px-6 py-4">Submission Date</th>
-                        <th class="px-6 py-4">Payout Deadline Date</th>
-                        <th class="px-6 py-4 text-right">Time Taken</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <For each={livePayouts()}>
-                        {(p) => {
-                          const sub = new Date(p.submission_date);
-                          const pay = new Date(p.payout_date);
-                          const diffDays = Math.ceil(Math.abs(pay - sub) / (1000 * 60 * 60 * 24));
-
-                          return (
-                            <tr class="border-b border-border/40 hover:bg-foreground/[0.01] transition duration-200">
-                              <td class="px-6 py-4 text-foreground font-semibold font-display text-sm">
-                                {sub.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                              </td>
-                              <td class="px-6 py-4 text-foreground font-semibold font-display text-sm">
-                                {pay.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                              </td>
-                              <td class="px-6 py-4 text-right text-primary font-mono font-bold text-sm">
-                                <span class="inline-flex items-center gap-1 bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">
-                                  <Clock size={10} /> {diffDays} days
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        }}
-                      </For>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* MOBILE BOX VIEW */}
-              <div class="grid gap-4 sm:hidden">
+              {/* Unified Timeline Grid View */}
+              <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <For each={livePayouts()}>
                   {(p, idx) => {
                     const sub = new Date(p.submission_date);
                     const pay = new Date(p.payout_date);
                     const diffDays = Math.ceil(Math.abs(pay - sub) / (1000 * 60 * 60 * 24));
-                    const isOpen = p.status && p.status.toLowerCase().includes("open");
+                    const isSettled = pay <= new Date();
 
                     return (
-                      <div class="liquid-glass rounded-3xl p-6 border border-border/60 relative overflow-hidden flex flex-col justify-between">
-                        <div class="flex justify-between items-center mb-4">
-                          <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground bg-foreground/[0.03] border border-border/60 rounded px-2.5 py-0.5">
-                            Schedule #{idx() + 1}
+                      <div class="relative overflow-hidden liquid-glass rounded-[2rem] p-6 border border-border/50 hover:border-border/80 hover:bg-foreground/[0.01] transition-all duration-300 flex flex-col justify-between bg-background">
+                        {/* Card Header: Schedule & Status */}
+                        <div class="flex justify-between items-center mb-5">
+                          <span class="text-[9px] font-sans font-bold uppercase tracking-wider text-muted-foreground bg-foreground/[0.02] border border-border/60 rounded-full px-3 py-1">
+                            Run #{idx() + 1}
                           </span>
+                          <Show
+                            when={isSettled}
+                            fallback={
+                              <span class="text-[9.5px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1 flex items-center gap-1 shadow-sm font-sans">
+                                <span class="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                                Processing Run
+                              </span>
+                            }
+                          >
+                            <span class="text-[9.5px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 flex items-center gap-1 shadow-sm font-sans">
+                              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              Settled & Disbursed
+                            </span>
+                          </Show>
                         </div>
 
-                        <div class="space-y-3 mb-4">
-                          <div>
-                            <span class="text-[9px] font-mono font-bold text-muted-foreground block uppercase tracking-wider mb-0.5">Submission Date</span>
-                            <span class="font-bold text-foreground font-display text-sm">
-                              {sub.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        {/* Interactive Timeline visualization */}
+                        <div class="relative flex items-center justify-between my-5 px-1">
+                          {/* Dotted Track Line */}
+                          <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[1px] pointer-events-none z-0">
+                            <div
+                              class={`h-full w-full ${isSettled ? "border-t border-emerald-500/30" : "border-t border-dashed border-border/80"}`}
+                            />
+                          </div>
+
+                          {/* Left node (Submission) */}
+                          <div class="relative z-10 flex flex-col items-center select-none">
+                            <div class={`h-9 w-9 rounded-full flex items-center justify-center border shadow-md transition duration-300 ${isSettled ? "bg-emerald-950/80 border-emerald-500 text-emerald-400" : "bg-secondary border-border text-muted-foreground"}`}>
+                              <Upload size={13} class="stroke-[2.5]" />
+                            </div>
+                            <span class="text-[8px] font-sans font-bold text-muted-foreground mt-2 uppercase tracking-wider">Submitted</span>
+                            <span class="text-[10px] font-bold text-foreground mt-0.5">
+                              {sub.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                             </span>
                           </div>
-                          <div>
-                            <span class="text-[9px] font-mono font-bold text-muted-foreground block uppercase tracking-wider mb-0.5">Payout Deadline</span>
-                            <span class="font-bold text-foreground font-display text-sm">
-                              {pay.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+
+                          {/* Center badge (Days count) */}
+                          <div class="relative z-20 px-2.5 py-0.5 rounded-full bg-background border border-border/80 text-[7.5px] font-bold text-primary uppercase tracking-wider shadow-sm font-sans">
+                            ⚡ {diffDays}d Run
+                          </div>
+
+                          {/* Right node (Disbursed) */}
+                          <div class="relative z-10 flex flex-col items-center select-none">
+                            <div class={`h-9 w-9 rounded-full flex items-center justify-center border shadow-md transition duration-300 ${isSettled ? "bg-emerald-950/80 border-emerald-500 text-emerald-400 animate-pulse" : "bg-secondary border-border text-muted-foreground"}`}>
+                              <CheckCircle size={13} class="stroke-[2.5]" />
+                            </div>
+                            <span class="text-[8px] font-sans font-bold text-muted-foreground mt-2 uppercase tracking-wider">Disbursed</span>
+                            <span class="text-[10px] font-bold text-foreground mt-0.5">
+                              {pay.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                             </span>
                           </div>
                         </div>
 
-                        <div class="border-t border-border/30 pt-3 flex justify-between items-center">
-                          <span class="text-[10px] text-muted-foreground font-medium">Settlement Speed:</span>
-                          <span class="font-mono font-bold text-primary text-xs bg-primary/10 px-2 py-0.5 rounded border border-primary/10">
-                            {diffDays} days
+                        {/* Card Footer detail */}
+                        <div class="border-t border-border/30 pt-3 flex justify-between items-center text-[9px] text-muted-foreground font-sans">
+                          <span>Timeline Cycle:</span>
+                          <span class="font-semibold text-foreground">
+                            {isSettled ? "100% Disbursed on Schedule" : "Settlement Pending"}
                           </span>
                         </div>
                       </div>

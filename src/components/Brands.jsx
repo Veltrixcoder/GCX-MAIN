@@ -61,11 +61,11 @@ export function Brands() {
       <div class="relative mx-auto max-w-7xl px-4">
 
         <div class="text-center mb-6 sm:mb-8">
-          <p class="text-[10px] font-bold font-mono uppercase tracking-widest text-primary mb-3">Accepted cards</p>
-          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-foreground leading-tight">
+          <p class="text-[10px] font-bold font-sans uppercase tracking-wider text-primary mb-3">Accepted cards</p>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-bold font-display tracking-tight text-foreground leading-tight">
             We take the cards <span class="text-gradient">you actually own</span>
           </h2>
-          <p class="text-xs text-muted-foreground mt-3 font-mono">Click on any card to view detailed variant payout rates</p>
+          <p class="text-xs text-muted-foreground mt-3 font-sans">Click on any card to view detailed variant payout rates</p>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -94,12 +94,18 @@ export function Brands() {
                       </div>
 
                       {/* Header details */}
-                      <div class="relative" style={{ transform: "translateZ(20px)" }}>
-                        <div class="flex items-center justify-between mb-3">
+                      <div class="relative space-y-3.5" style={{ transform: "translateZ(20px)" }}>
+                        <div class="flex items-center justify-between">
                           <h3 class="text-base sm:text-lg font-bold font-display text-foreground">{b.name}</h3>
-                          <span class="text-[8px] sm:text-[9px] font-bold font-mono uppercase tracking-wider text-muted-foreground/90 bg-card rounded-full px-2.5 py-1 border border-border">
+                          <span class="text-[8px] sm:text-[9px] font-bold font-sans uppercase tracking-wider text-muted-foreground/80 bg-card rounded-full px-2.5 py-1 border border-border">
                             {b.tag}
                           </span>
+                        </div>
+                        
+                        {/* Baseline Rate Indicator */}
+                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-foreground/[0.02] border border-border/40">
+                          <span class="text-[9px] font-sans font-semibold text-muted-foreground uppercase tracking-wider">Base Exchange Rate</span>
+                          <span class="text-xs font-bold text-primary">{b.rate}</span>
                         </div>
                       </div>
                     </div>
@@ -107,8 +113,8 @@ export function Brands() {
                     {/* Bottom breakdown section */}
                     <div class="relative mt-4" style={{ transform: "translateZ(20px)" }}>
                       <div class="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground font-sans">
-                        <span class="font-bold font-display text-foreground flex items-center gap-1">
-                          See Rates
+                        <span class="font-bold text-foreground flex items-center gap-1">
+                          See Variant Rates
                         </span>
                         <span class="text-foreground/70">
                           {isExpanded() ? <ChevronUp size={16} class="text-primary" /> : <ChevronDown size={16} />}
@@ -117,20 +123,21 @@ export function Brands() {
 
                       {/* Variants Breakdown */}
                       <Show when={isExpanded() && b.variants && b.variants.length > 0}>
-                        <div class="overflow-hidden mt-3 pt-3 border-t border-border/30 space-y-2 text-xs transition-all duration-300">
+                        <div class="overflow-hidden mt-3 pt-3 border-t border-border/30 space-y-2.5 text-xs transition-all duration-300">
+                          <p class="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Variant Payout Breakdown</p>
                           <For each={b.variants}>
                             {(v) => (
                               <div class="flex justify-between items-center text-muted-foreground hover:text-foreground transition py-1 border-b border-border/10 last:border-0">
-                                <span class="font-medium text-foreground">{v.name}</span>
+                                <span class="font-semibold text-foreground">{v.name}</span>
                                 <div class="flex flex-wrap items-center justify-end gap-1.5 max-w-[70%]">
                                   <Show when={v.inr_rate}>
-                                    <span class="font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/15 flex items-center gap-1 text-[11px]">
-                                      <span class="text-[9px] opacity-75 font-sans">INR:</span> {v.inr_rate}
+                                    <span class="font-sans text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 flex items-center gap-1 text-[10.5px]">
+                                      <span class="text-[8px] opacity-75 font-semibold text-emerald-500/90 uppercase">INR</span> {v.inr_rate}
                                     </span>
                                   </Show>
                                   <Show when={v.usdt_rate}>
-                                    <span class="font-mono text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded-lg border border-rose-500/15 flex items-center gap-1 text-[11px]">
-                                      <span class="text-[9px] opacity-75 font-sans">USDT:</span> {v.usdt_rate}
+                                    <span class="font-sans text-cyan-400 font-bold bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20 flex items-center gap-1 text-[10.5px]">
+                                      <span class="text-[8px] opacity-75 font-semibold text-cyan-500/90 uppercase">USDT</span> {v.usdt_rate}
                                     </span>
                                   </Show>
                                 </div>
@@ -142,7 +149,7 @@ export function Brands() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            class="mt-3.5 w-full text-center rounded-full bg-primary text-black font-bold py-2 text-[11px] transition block hover:bg-accent"
+                            class="mt-3.5 w-full text-center rounded-full bg-primary text-black font-bold py-2 text-[11px] transition block hover:bg-accent cursor-pointer"
                           >
                             Start Trade on WhatsApp ➔
                           </a>
