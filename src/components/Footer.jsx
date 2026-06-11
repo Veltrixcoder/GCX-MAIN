@@ -1,18 +1,19 @@
 import logoImg from "../assets/images/logo.png";
+import { Link } from "./router";
 
 export function Footer() {
   return (
     <footer class="relative border-t border-border/50 py-6 mt-6">
-      <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground font-sans">
         <div class="flex items-center gap-2">
           <img src={logoImg} alt="GCX Logo" class="h-6 w-auto object-contain" />
           <span class="font-bold font-display text-foreground">GCX</span>
           <span>· Gift card exchange</span>
         </div>
         <div class="flex gap-6">
-          <a href="#" class="hover:text-foreground transition">Privacy</a>
-          <a href="#" class="hover:text-foreground transition">Terms</a>
-          <a href="#" class="hover:text-foreground transition">Support</a>
+          <Link to="/privacy" class="hover:text-foreground transition">Privacy</Link>
+          <Link to="/terms" class="hover:text-foreground transition">Terms</Link>
+          <Link to="/support" class="hover:text-foreground transition">Support</Link>
         </div>
         <p>© {new Date().getFullYear()} GCX. All rights reserved.</p>
       </div>

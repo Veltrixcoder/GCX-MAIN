@@ -4,6 +4,9 @@ import LandingPage from "./pages/LandingPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import AppealPage from "./pages/AppealPage";
 import AdminPage from "./pages/AdminPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+import SupportPage from "./pages/SupportPage";
 
 function App() {
   return (
@@ -19,6 +22,15 @@ function App() {
       </Match>
       <Match when={currentPath() === "/internal/staff/admin"}>
         <AdminPage />
+      </Match>
+      <Match when={currentPath() === "/privacy"}>
+        <PrivacyPage />
+      </Match>
+      <Match when={currentPath() === "/terms"}>
+        <TermsPage />
+      </Match>
+      <Match when={currentPath() === "/support"}>
+        <SupportPage />
       </Match>
     </Switch>
   );
