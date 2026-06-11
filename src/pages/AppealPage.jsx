@@ -84,10 +84,9 @@ export function AppealPage() {
         <Show
           when={!submitted()}
           fallback={
-            <div class="liquid-glass rounded-[2.5rem] p-8 sm:p-12 border border-border/60 text-center shadow-2xl relative overflow-hidden bg-background">
-              <div class="absolute inset-x-0 top-0 h-[3px] bg-[#059669]" />
+            <div class="liquid-glass rounded-[2.5rem] p-8 sm:p-12 border border-border/30 text-center shadow-2xl relative overflow-hidden bg-background">
 
-              <div class="mx-auto h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 shadow-sm">
+              <div class="mx-auto h-16 w-16 rounded-full bg-emerald-500/5 border border-emerald-500/15 flex items-center justify-center text-emerald-400/90 mb-6 shadow-sm">
                 <CheckCircle2 size={32} />
               </div>
 
@@ -117,9 +116,7 @@ export function AppealPage() {
             </div>
           }
         >
-          <div class="liquid-glass rounded-[2.5rem] p-6 sm:p-10 border border-border/60 shadow-2xl relative overflow-hidden bg-background">
-            {/* Top visual accent */}
-            <div class="absolute inset-x-0 top-0 h-[3px] bg-primary" />
+          <div class="liquid-glass rounded-[2.5rem] p-6 sm:p-10 border border-border/30 shadow-2xl relative overflow-hidden bg-background">
 
             <div class="text-center mb-8">
               <div class="inline-flex items-center gap-2 rounded-full bg-red-500/10 border border-red-500/20 px-3 py-1 text-[10px] font-bold font-mono uppercase tracking-wider text-red-400 mb-4">
@@ -146,7 +143,7 @@ export function AppealPage() {
                     value={name()}
                     onInput={(e) => setName(e.target.value)}
                     placeholder="e.g. Aarav Sharma"
-                    class="w-full bg-foreground/[0.02] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/60 transition"
+                    class="w-full bg-[#121214]/40 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/45 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300"
                   />
                 </div>
                 <div>
@@ -159,7 +156,7 @@ export function AppealPage() {
                     value={phone()}
                     onInput={(e) => setPhone(e.target.value)}
                     placeholder="e.g. +91 98765 43210 (Used for card submission)"
-                    class="w-full bg-foreground/[0.02] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/60 transition font-mono"
+                    class="w-full bg-[#121214]/40 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/45 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 font-mono"
                   />
                 </div>
               </div>
@@ -173,15 +170,15 @@ export function AppealPage() {
                   <select
                     value={cardType()}
                     onChange={(e) => setCardType(e.target.value)}
-                    class="w-full bg-foreground/[0.02] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/60 transition cursor-pointer"
+                    class="w-full bg-[#121214]/40 border border-border/50 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 cursor-pointer"
                   >
-                    <option value="Amazon" class="bg-[#080711]">Amazon</option>
-                    <option value="Flipkart" class="bg-[#080711]">Flipkart</option>
-                    <option value="Roblox" class="bg-[#080711]">Roblox</option>
-                    <option value="League of Legends" class="bg-[#080711]">League of Legends</option>
-                    <option value="Overwatch 2" class="bg-[#080711]">Overwatch 2</option>
-                    <option value="Sea of Thieves" class="bg-[#080711]">Sea of Thieves</option>
-                    <option value="Other" class="bg-[#080711]">Other</option>
+                    <option value="Amazon" class="bg-[#121214]">Amazon</option>
+                    <option value="Flipkart" class="bg-[#121214]">Flipkart</option>
+                    <option value="Roblox" class="bg-[#121214]">Roblox</option>
+                    <option value="League of Legends" class="bg-[#121214]">League of Legends</option>
+                    <option value="Overwatch 2" class="bg-[#121214]">Overwatch 2</option>
+                    <option value="Sea of Thieves" class="bg-[#121214]">Sea of Thieves</option>
+                    <option value="Other" class="bg-[#121214]">Other</option>
                   </select>
                 </div>
                 <div>
@@ -194,7 +191,7 @@ export function AppealPage() {
                     value={email()}
                     onInput={(e) => setEmail(e.target.value)}
                     placeholder="e.g. aarav@gmail.com"
-                    class="w-full bg-foreground/[0.02] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/60 transition"
+                    class="w-full bg-[#121214]/40 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/45 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300"
                   />
                 </div>
               </div>
@@ -210,7 +207,7 @@ export function AppealPage() {
                   value={payoutAddress()}
                   onInput={(e) => setPayoutAddress(e.target.value)}
                   placeholder="e.g. aarav@ybl OR USDT Wallet Address"
-                  class="w-full bg-foreground/[0.02] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/60 transition font-mono"
+                  class="w-full bg-[#121214]/40 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/45 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 font-mono"
                 />
               </div>
 
@@ -224,15 +221,15 @@ export function AppealPage() {
                   onInput={(e) => setDetails(e.target.value)}
                   placeholder="Enter card batch details, times, or any context regarding the delay..."
                   rows={4}
-                  class="w-full bg-foreground/[0.02] border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/60 transition resize-none leading-relaxed"
+                  class="w-full bg-[#121214]/40 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/45 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-300 resize-none leading-relaxed"
                 />
               </div>
 
               {/* Reassurance Badge */}
-              <div class="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 text-emerald-400">
-                <ShieldCheck size={18} class="shrink-0" />
-                <span class="text-[10px] font-medium leading-normal">
-                  <strong>Your data is fully secured:</strong> We use industry-standard encryption to protect your privacy and data.
+              <div class="flex items-start gap-2.5 p-4 rounded-xl bg-emerald-500/[0.02] border border-emerald-500/10 text-muted-foreground">
+                <ShieldCheck size={18} class="shrink-0 text-emerald-500/80 mt-0.5" />
+                <span class="text-[10px] leading-relaxed">
+                  <strong class="text-foreground font-semibold">Your data is fully secured:</strong> We use industry-standard encryption to protect your privacy and transaction data.
                 </span>
               </div>
 
@@ -247,7 +244,7 @@ export function AppealPage() {
               <button
                 type="submit"
                 disabled={submitting()}
-                class="w-full rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 hover:border-primary/45 text-primary backdrop-blur-md py-3.5 text-xs font-bold transition-all duration-300 text-center disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5"
+                class="w-full rounded-xl bg-primary text-black hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/5 py-3.5 text-xs font-bold transition-all duration-300 text-center disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <Show
                   when={submitting()}

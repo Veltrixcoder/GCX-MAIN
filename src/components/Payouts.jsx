@@ -141,8 +141,7 @@ export function Payouts() {
                       <tr class="bg-foreground/[0.03] border-b border-border text-[9px] font-mono uppercase tracking-wider text-muted-foreground/85">
                         <th class="px-6 py-4">Submission Date</th>
                         <th class="px-6 py-4">Payout Deadline Date</th>
-                        <th class="px-6 py-4">Time Taken</th>
-                        <th class="px-6 py-4 text-right">Status</th>
+                        <th class="px-6 py-4 text-right">Time Taken</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -151,7 +150,6 @@ export function Payouts() {
                           const sub = new Date(p.submission_date);
                           const pay = new Date(p.payout_date);
                           const diffDays = Math.ceil(Math.abs(pay - sub) / (1000 * 60 * 60 * 24));
-                          const isOpen = p.status && p.status.toLowerCase().includes("open");
 
                           return (
                             <tr class="border-b border-border/40 hover:bg-foreground/[0.01] transition duration-200">
@@ -161,22 +159,10 @@ export function Payouts() {
                               <td class="px-6 py-4 text-foreground font-semibold font-display text-sm">
                                 {pay.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                               </td>
-                              <td class="px-6 py-4 text-primary font-mono font-bold text-sm">
+                              <td class="px-6 py-4 text-right text-primary font-mono font-bold text-sm">
                                 <span class="inline-flex items-center gap-1 bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">
                                   <Clock size={10} /> {diffDays} days
                                 </span>
-                              </td>
-                              <td class="px-6 py-4 text-right">
-                                {isOpen ? (
-                                  <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-[10px] font-bold text-primary shadow-sm">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                                    Submission Open
-                                  </span>
-                                ) : (
-                                  <span class="inline-flex items-center gap-1 rounded-full bg-red-500/10 border border-red-500/20 px-3 py-1 text-[10px] font-bold text-red-400 shadow-sm">
-                                    Submission Closed
-                                  </span>
-                                )}
                               </td>
                             </tr>
                           );
@@ -202,16 +188,6 @@ export function Payouts() {
                           <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground bg-foreground/[0.03] border border-border/60 rounded px-2.5 py-0.5">
                             Schedule #{idx() + 1}
                           </span>
-                          {isOpen ? (
-                            <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[9px] font-bold text-primary">
-                              <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                              Open
-                            </span>
-                          ) : (
-                            <span class="inline-flex items-center gap-1 rounded-full bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 text-[9px] font-bold text-red-400">
-                              Closed
-                            </span>
-                          )}
                         </div>
 
                         <div class="space-y-3 mb-4">
