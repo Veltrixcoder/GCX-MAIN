@@ -141,7 +141,6 @@ export function AdminPage() {
   const [payouts, setPayouts] = createSignal([]);
   const [loadingPayouts, setLoadingPayouts] = createSignal(true);
   const [payoutSearch, setPayoutSearch] = createSignal("");
-  const [payoutFilterStatus, setPayoutFilterStatus] = createSignal("All");
   const [payoutFormMode, setPayoutFormMode] = createSignal("single"); // "single" or "batch"
 
   // Single payout run form
@@ -150,7 +149,6 @@ export function AdminPage() {
   const [singleAmount, setSingleAmount] = createSignal("N/A");
   const [singleCardType, setSingleCardType] = createSignal("All Cards");
   const [singleMethod, setSingleMethod] = createSignal("Any");
-  const [singleStatus, setSingleStatus] = createSignal("Submission Open");
 
   // Batch payouts form rows
   const [batchPayouts, setBatchPayouts] = createSignal([]);
@@ -440,8 +438,7 @@ export function AdminPage() {
           payout_date: singlePayoutDate(),
           amount: singleAmount(),
           card_type: singleCardType(),
-          method: singleMethod(),
-          status: singleStatus()
+          method: singleMethod()
         })
       });
       if (res.ok) {
@@ -466,8 +463,7 @@ export function AdminPage() {
         payout_date: payStr,
         amount: "N/A",
         card_type: "All Cards",
-        method: "Any",
-        status: "Submission Open"
+        method: "Any"
       }
     ]);
   };
@@ -530,8 +526,7 @@ export function AdminPage() {
           payout_date: editingPayoutPayDate(),
           amount: payout?.amount || "N/A",
           card_type: payout?.card_type || "All Cards",
-          method: payout?.method || "Any",
-          status: payout?.status || "Submission Open"
+          method: payout?.method || "Any"
         })
       });
       if (res.ok) {
@@ -545,30 +540,6 @@ export function AdminPage() {
     }
   };
 
-  const handleUpdatePayoutStatus = async (id, newStatus) => {
-    const payout = payouts().find(p => p.id === id);
-    if (!payout) return;
-    try {
-      const res = await adminFetch(`https://api.gcx.co.in/api/payouts/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          submission_date: payout.submission_date,
-          payout_date: payout.payout_date,
-          amount: payout.amount || "N/A",
-          card_type: payout.card_type || "All Cards",
-          method: payout.method || "Any",
-          status: newStatus
-        })
-      });
-      if (res.ok) {
-        showNotification("Status updated!");
-        const data = await adminFetch("https://api.gcx.co.in/api/payouts");
-        setPayouts(await data.json());
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleDeletePayout = async (id) => {
     if (!confirm("Delete this timeline record?")) return;
@@ -1385,17 +1356,6 @@ export function AdminPage() {
                                 </div>
                               </div>
 
-                              <div>
-                                <label class="block text-[10px] font-mono font-bold uppercase text-muted-foreground mb-1.5">Initial Status</label>
-                                <select
-                                  value={singleStatus()}
-                                  onChange={(e) => setSingleStatus(e.target.value)}
-                                  class="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-foreground focus:outline-none focus:border-primary/60 transition cursor-pointer [color-scheme:light-dark]"
-                                >
-                                  <option value="Submission Open">Submission Open</option>
-                                  <option value="Submission Closed">Submission Closed</option>
-                                </select>
-                              </div>
 
                               <button
                                 type="submit"
@@ -1463,17 +1423,6 @@ export function AdminPage() {
                                           </div>
                                         </div>
 
-                                        <div>
-                                          <label class="block text-[8px] font-mono uppercase text-muted-foreground mb-1">Timeline Status</label>
-                                          <select
-                                            value={row.status}
-                                            onChange={(e) => handleBatchRowChange(idx(), "status", e.target.value)}
-                                            class="w-full bg-background border border-border rounded-lg px-2.5 py-1 text-[10px] text-foreground focus:outline-none focus:border-primary [color-scheme:light-dark]"
-                                          >
-                                            <option value="Submission Open">Submission Open</option>
-                                            <option value="Submission Closed">Submission Closed</option>
-                                          </select>
-                                        </div>
                                       </div>
                                     )}
                                   </For>
@@ -1515,24 +1464,11 @@ export function AdminPage() {
                           <Search size={11} class="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/80" />
                           <input
                             type="text"
-                            placeholder="Search dates/status..."
+                            placeholder="Search dates..."
                             value={payoutSearch()}
                             onInput={(e) => setPayoutSearch(e.target.value)}
                             class="bg-foreground/[0.02] border border-border rounded-xl pl-7 pr-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-primary/60 transition w-36 sm:w-44"
                           />
-                        </div>
-
-                        <div class="relative flex items-center">
-                          <Filter size={11} class="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/80" />
-                          <select
-                            value={payoutFilterStatus()}
-                            onChange={(e) => setPayoutFilterStatus(e.target.value)}
-                            class="bg-background border border-border rounded-xl pl-7 pr-2 py-1.5 text-xs text-foreground focus:outline-none cursor-pointer text-[11px] [color-scheme:light-dark]"
-                          >
-                            <option value="All" class="bg-background text-foreground">All Runs</option>
-                            <option value="Open" class="bg-background text-positive">Open Runs</option>
-                            <option value="Closed" class="bg-background text-negative">Closed Runs</option>
-                          </select>
                         </div>
                       </div>
                     </div>
@@ -1547,27 +1483,21 @@ export function AdminPage() {
                             <thead>
                               <tr class="bg-foreground/[0.03] border-b border-border text-[9px] font-mono uppercase tracking-wider text-muted-foreground/90">
                                 <th class="px-5 py-3">Submission / Payout Deadline</th>
-                                <th class="px-5 py-3">Status</th>
                                 <th class="px-5 py-3 text-right">Action</th>
                               </tr>
                             </thead>
                             <tbody>
                               <For each={payouts().filter(p => {
-                                const matchesStatus = payoutFilterStatus() === "All" ||
-                                  (payoutFilterStatus() === "Open" && p.status?.toLowerCase().includes("open")) ||
-                                  (payoutFilterStatus() === "Closed" && p.status?.toLowerCase().includes("closed"));
-
                                 const subDateStr = p.submission_date ? new Date(p.submission_date).toLocaleDateString('en-GB') : "";
                                 const payDateStr = p.payout_date ? new Date(p.payout_date).toLocaleDateString('en-GB') : "";
                                 const query = payoutSearch().toLowerCase();
 
-                                return matchesStatus && (!payoutSearch() || subDateStr.toLowerCase().includes(query) || payDateStr.toLowerCase().includes(query) || p.status?.toLowerCase().includes(query));
+                                return (!payoutSearch() || subDateStr.toLowerCase().includes(query) || payDateStr.toLowerCase().includes(query));
                               })}>
                                 {(p) => {
                                   const subDate = new Date(p.submission_date);
                                   const payDate = new Date(p.payout_date);
                                   const diffDays = Math.ceil(Math.abs(payDate.getTime() - subDate.getTime()) / (1000 * 60 * 60 * 24));
-                                  const isOpen = p.status && p.status.toLowerCase().includes("open");
 
                                   return (
                                     <tr class="border-b border-border/40 hover:bg-foreground/[0.02] transition duration-150">
@@ -1583,26 +1513,6 @@ export function AdminPage() {
                                               </div>
                                               <div class="text-[10px] text-positive font-mono font-bold">
                                                 <span>Settle: {diffDays} days</span>
-                                              </div>
-                                            </td>
-                                            <td class="px-5 py-3.5">
-                                              <div class="flex items-center gap-2">
-                                                <span class={`relative flex h-2 w-2 rounded-full ${isOpen ? "bg-positive" : "bg-negative"}`}>
-                                                  <Show when={isOpen}>
-                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                                  </Show>
-                                                </span>
-                                                <select
-                                                  value={p.status || "Submission Open"}
-                                                  onChange={(e) => handleUpdatePayoutStatus(p.id, e.target.value)}
-                                                  class={`rounded-[4px] px-3 py-1 text-[10px] font-bold border focus:outline-none cursor-pointer transition ${isOpen
-                                                    ? "bg-positive/5 border-positive/20 text-positive"
-                                                    : "bg-negative/5 border-negative/20 text-negative"
-                                                    } [color-scheme:light-dark]`}
-                                                >
-                                                  <option value="Submission Open">Open</option>
-                                                  <option value="Submission Closed">Closed</option>
-                                                </select>
                                               </div>
                                             </td>
                                             <td class="px-5 py-3.5 text-right">

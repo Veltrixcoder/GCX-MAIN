@@ -1,5 +1,5 @@
 import { createSignal, For, Show } from "solid-js";
-import { Star, Quote, CheckCircle, Upload, Image as ImageIcon, Loader2, AlertCircle, Plus, X, ArrowLeft, Calendar } from "lucide-solid";
+import { Star, Quote, CheckCircle, Upload, Image as ImageIcon, Loader2, AlertCircle, Plus, X, ArrowLeft, Calendar, ChevronLeft, ChevronRight } from "lucide-solid";
 import { Link } from "../components/router";
 import Navbar from "../components/Navbar";
 
@@ -18,13 +18,26 @@ export function ReviewsPage() {
   const [paymentSentDate, setPaymentSentDate] = createSignal("");
   const [rating, setRating] = createSignal(5);
   const [quote, setQuote] = createSignal("");
-  const [proofImage, setProofImage] = createSignal(null);
   const [uploadingImage, setUploadingImage] = createSignal(false);
-  const [imageUrl, setImageUrl] = createSignal("");
+  const [imageUrls, setImageUrls] = createSignal([]);
   const [submitting, setSubmitting] = createSignal(false);
   const [formError, setFormError] = createSignal("");
   const [formSuccess, setFormSuccess] = createSignal(false);
-  const [zoomedImgUrl, setZoomedImgUrl] = createSignal(null);
+  
+  // Multi-image viewer state
+  const [zoomedImages, setZoomedImages] = createSignal([]);
+  const [zoomedIndex, setZoomedIndex] = createSignal(0);
+  
+  const openZoom = (images, index = 0) => {
+    setZoomedImages(images);
+    setZoomedIndex(index);
+  };
+  
+  const closeZoom = () => {
+    setZoomedImages([]);
+    setZoomedIndex(0);
+  };
+
   const [notification, setNotification] = createSignal({ message: "", type: "" });
 
   const showNotification = (message, type = "success") => {
@@ -77,26 +90,29 @@ export function ReviewsPage() {
   fetchReviews();
 
   const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
     setUploadingImage(true);
     setFormError("");
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch("https://veltrixcode-vscode.hf.space/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      if (data.success && data.url) {
-        setImageUrl(data.url);
-        setProofImage(file);
-        showNotification("Proof receipt uploaded successfully!");
-      } else {
-        setFormError("Failed to upload image. Please try again.");
-        showNotification("Failed to upload image.", "error");
+      const uploadedList = [...imageUrls()];
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await fetch("https://veltrixcode-vscode.hf.space/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        if (data.success && data.url) {
+          uploadedList.push(data.url);
+        } else {
+          setFormError("Failed to upload some image(s). Please try again.");
+          showNotification("Failed to upload image.", "error");
+        }
       }
+      setImageUrls(uploadedList);
+      showNotification("Proof receipt(s) uploaded successfully!");
     } catch (err) {
       console.error("Image upload error:", err);
       setFormError("Error uploading image. Check network connection.");
@@ -104,6 +120,10 @@ export function ReviewsPage() {
     } finally {
       setUploadingImage(false);
     }
+  };
+
+  const removeUploadedImage = (indexToRemove) => {
+    setImageUrls(prev => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleSubmit = async (e) => {
@@ -114,7 +134,7 @@ export function ReviewsPage() {
     if (!name().trim()) return setFormError("Name is required");
     if (!quote().trim()) return setFormError("Review description is required");
     if (!tradeType().trim()) return setFormError("Trade type is required (e.g. Amazon ➔ UPI)");
-    if (!imageUrl()) return setFormError("Proof image is required to post a review");
+    if (imageUrls().length === 0) return setFormError("Proof image is required to post a review");
 
     setSubmitting(true);
 
@@ -129,7 +149,7 @@ export function ReviewsPage() {
           quote: quote(),
           rating: rating(),
           trade_type: tradeType(),
-          proof_image_url: imageUrl(),
+          proof_image_url: imageUrls().join(','),
           region: region() || null,
           gc_received_date: gcReceivedDate() || null,
           payment_sent_date: paymentSentDate() || null
@@ -142,7 +162,7 @@ export function ReviewsPage() {
         setName(""); setRole(""); setQuote(""); setRating(5);
         setCardType("Amazon"); setTradeType("Amazon ➔ UPI");
         setRegion(""); setGcReceivedDate(""); setPaymentSentDate("");
-        setProofImage(null); setImageUrl("");
+        setImageUrls([]);
         fetchReviews();
         setTimeout(() => { setShowModal(false); setFormSuccess(false); }, 1500);
       } else {
@@ -169,15 +189,15 @@ export function ReviewsPage() {
 
         {/* Back Link */}
         <div class="mb-6 flex justify-start">
-          <Link to="/" class="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition font-mono font-semibold">
+          <Link to="/" class="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition font-sans font-semibold">
             <ArrowLeft size={13} /> Back to Home
           </Link>
         </div>
 
         {/* Title */}
         <div class="text-center mb-16 max-w-3xl mx-auto">
-          <p class="text-[10px] font-bold font-mono uppercase tracking-widest text-primary mb-3">Community Hub</p>
-          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-display mb-6 tracking-tight leading-tight text-foreground">
+          <p class="text-[10px] font-bold font-sans uppercase tracking-wider text-primary mb-3">Community Hub</p>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold font-display mb-6 tracking-tight leading-tight text-foreground">
             Real Brokerage <span class="text-gradient">Proofs & Reviews</span>
           </h1>
           <p class="text-muted-foreground text-sm sm:text-base md:text-lg font-sans">
@@ -188,7 +208,7 @@ export function ReviewsPage() {
         {/* Reviews Feed */}
         <div class="space-y-6">
           <h2 class="text-lg font-bold font-display text-foreground border-b border-border/60 pb-3 flex items-center gap-2">
-            Reviews Feed <span class="text-xs font-mono font-bold text-muted-foreground bg-foreground/[0.04] px-2 py-0.5 rounded-full">{reviews().length} total</span>
+            Reviews Feed <span class="text-xs font-sans font-bold text-muted-foreground bg-foreground/[0.04] px-2 py-0.5 rounded-full">{reviews().length} total</span>
           </h2>
 
           <Show when={loading()}>
@@ -242,58 +262,95 @@ export function ReviewsPage() {
                         {/* Dates / Payout Timeline Widget */}
                         <div class="relative flex items-center justify-between mt-3 mb-6 px-4 py-2.5 rounded-2xl bg-foreground/[0.015] border border-border/40 shadow-inner">
                           <div class="relative z-10 flex flex-col text-left">
-                            <span class="text-[8px] font-mono font-bold uppercase text-amber-400/90 tracking-wider flex items-center gap-1">
+                            <span class="text-[8px] font-bold uppercase text-amber-400/90 tracking-wider flex items-center gap-1">
                               <span class="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_6px_rgba(245,158,11,0.4)]" />
                               GC Received
                             </span>
-                            <span class="text-[10.5px] font-bold font-display text-foreground mt-0.5">{formatDate(r.gc_received_date)}</span>
+                            <span class="text-[10.5px] font-bold text-foreground mt-0.5">{formatDate(r.gc_received_date)}</span>
                           </div>
 
                           <div class="absolute left-[28%] right-[28%] top-1/2 -translate-y-1/2 flex items-center justify-center">
                             <div class="w-full h-0 border-t border-dashed border-border/60" />
-                            <span class="absolute px-2.5 py-0.5 rounded-full bg-background border border-border/60 text-[7.5px] font-mono font-bold text-muted-foreground uppercase whitespace-nowrap shadow-sm">
+                            <span class="absolute px-2.5 py-0.5 rounded-full bg-background border border-border/60 text-[7.5px] font-bold text-muted-foreground uppercase whitespace-nowrap shadow-sm">
                               {diffDays === 0 ? "⚡ Instant" : `${diffDays}d Settlement`}
                             </span>
                           </div>
 
                           <div class="relative z-10 flex flex-col items-end text-right">
-                            <span class="text-[8px] font-mono font-bold uppercase text-emerald-400/90 tracking-wider flex items-center gap-1">
+                            <span class="text-[8px] font-bold uppercase text-emerald-400/90 tracking-wider flex items-center gap-1">
                               Payment Sent
                               <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.4)]" />
                             </span>
-                            <span class="text-[10.5px] font-bold font-display text-foreground mt-0.5">{formatDate(r.payment_sent_date)}</span>
+                            <span class="text-[10.5px] font-bold text-foreground mt-0.5">{formatDate(r.payment_sent_date)}</span>
                           </div>
                         </div>
 
                         {/* Proof Image Section */}
                         <Show when={r.proof_image_url}>
                           <div class="mb-5">
-                            <p class="text-[8px] font-bold font-mono uppercase tracking-wider text-muted-foreground mb-2">Verification Certificate</p>
-                            <a
-                              href={r.proof_image_url}
-                              onClick={(e) => { e.preventDefault(); setZoomedImgUrl(r.proof_image_url); }}
-                              class="flex items-center gap-3.5 p-3 rounded-2xl bg-foreground/[0.015] border border-border/60 hover:border-primary/50 hover:bg-foreground/[0.03] transition-all duration-300 group max-w-sm cursor-pointer"
-                            >
-                              <div class="relative h-24 w-24 shrink-0 rounded-xl overflow-hidden border border-border group-hover:border-primary/30 transition-colors shadow-inner bg-black/40">
-                                <img src={r.proof_image_url} alt="Proof transaction receipt" class="h-full w-full object-cover group-hover:scale-105 transition duration-300" />
-                                <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                  <ImageIcon size={20} class="text-white" />
-                                </div>
-                              </div>
-                              <div class="flex-grow min-w-0">
-                                <div class="flex items-center gap-1.5 mb-1">
-                                  <span class="text-[9px] font-bold font-mono text-primary flex items-center gap-0.5">
-                                    <CheckCircle size={9} class="fill-primary/15" /> SECURE LINK
-                                  </span>
-                                  <span class="h-1 w-1 rounded-full bg-border" />
-                                  <span class="text-[8px] font-mono text-muted-foreground uppercase">Payout Proof</span>
-                                </div>
-                                <h5 class="text-[10px] font-black font-display text-foreground truncate uppercase tracking-tight group-hover:text-primary transition-colors">
-                                  View Receipt Verification
-                                </h5>
-                                <p class="text-[8px] text-muted-foreground truncate font-semibold">Click to verify immutable block receipt</p>
-                              </div>
-                            </a>
+                            <p class="text-[8px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Verification Certificate</p>
+                            {(() => {
+                              const urls = r.proof_image_url.split(',');
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={() => openZoom(urls, 0)}
+                                  class="w-full flex items-center gap-4 p-2.5 rounded-2xl bg-foreground/[0.01] border border-border/60 hover:border-primary/40 hover:bg-foreground/[0.02] transition-all duration-300 group cursor-pointer text-left focus:outline-none"
+                                >
+                                  {/* Overlapping image stack */}
+                                  <div class="relative h-16 w-20 shrink-0 select-none">
+                                    <Show when={urls.length === 1}>
+                                      <div class="relative h-16 w-16 rounded-xl overflow-hidden border border-border bg-black/40 shadow-sm">
+                                        <img src={urls[0]} alt="Proof transaction receipt" class="h-full w-full object-cover group-hover:scale-105 transition duration-300" />
+                                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                          <ImageIcon size={14} class="text-white" />
+                                        </div>
+                                      </div>
+                                    </Show>
+                                    <Show when={urls.length > 1}>
+                                      <div class="relative w-full h-full">
+                                        <For each={urls.slice(0, 3).reverse()}>
+                                          {(url, idx) => {
+                                            const revIdx = urls.slice(0, 3).length - 1 - idx();
+                                            const offset = revIdx * 6;
+                                            const rotate = revIdx * 4 - 2;
+                                            return (
+                                              <div
+                                                class="absolute top-0 left-0 h-14 w-14 rounded-xl overflow-hidden border border-border bg-black/40 shadow-md transition-all duration-300 group-hover:scale-105"
+                                                style={{
+                                                  transform: `translate(${offset}px, ${offset/2}px) rotate(${rotate}deg)`,
+                                                  "z-index": 10 - revIdx,
+                                                }}
+                                              >
+                                                <img src={url} alt="Proof transaction receipt" class="h-full w-full object-cover" />
+                                              </div>
+                                            );
+                                          }}
+                                        </For>
+                                      </div>
+                                    </Show>
+                                  </div>
+
+                                  <div class="flex-grow min-w-0">
+                                    <div class="flex items-center gap-1.5 mb-1">
+                                      <span class="text-[9px] font-bold text-primary flex items-center gap-0.5">
+                                        <CheckCircle size={9} class="fill-primary/15" /> SECURE LEDGER
+                                      </span>
+                                      <span class="h-1 w-1 rounded-full bg-border" />
+                                      <span class="text-[8px] font-semibold text-muted-foreground uppercase">
+                                        {urls.length === 1 ? "1 Receipt" : `${urls.length} Receipts`}
+                                      </span>
+                                    </div>
+                                    <h5 class="text-[10px] font-bold text-foreground truncate uppercase tracking-tight group-hover:text-primary transition-colors">
+                                      {urls.length === 1 ? "Verify Payout Receipt" : "Browse Payout Receipts"}
+                                    </h5>
+                                    <p class="text-[8px] text-muted-foreground truncate">
+                                      {urls.length === 1 ? "Click to view full receipt" : "Click to view receipt stack"}
+                                    </p>
+                                  </div>
+                                </button>
+                              );
+                            })()}
                           </div>
                         </Show>
 
@@ -311,7 +368,7 @@ export function ReviewsPage() {
                               </Show>
                             </div>
                             <div>
-                              <h4 class="font-bold text-xs font-display text-foreground">{r.name}</h4>
+                              <h4 class="font-bold text-xs text-foreground">{r.name}</h4>
                               <p class="text-[10px] text-muted-foreground font-sans">{r.role}</p>
                             </div>
                           </div>
@@ -319,16 +376,16 @@ export function ReviewsPage() {
                           <div class="flex flex-col items-end gap-1">
                             <div class="flex items-center gap-1.5">
                               <Show when={r.region}>
-                                <span class={`text-[8px] font-black font-mono uppercase tracking-wider rounded-full px-2 py-0.5 border ${r.region === "US" ? "text-sky-400 bg-sky-500/10 border-sky-500/20" : "text-rose-400 bg-rose-500/10 border-rose-500/20"
+                                <span class={`text-[8px] font-bold uppercase tracking-wider rounded-full px-2 py-0.5 border ${r.region === "US" ? "text-sky-400 bg-sky-500/10 border-sky-500/20" : "text-rose-400 bg-rose-500/10 border-rose-500/20"
                                   }`}>
                                   {r.region === "US" ? "🇺🇸 US" : "🇬🇧 UK"}
                                 </span>
                               </Show>
-                              <span class="text-[8.5px] font-bold font-mono text-muted-foreground/80 bg-foreground/[0.03] border border-border/60 rounded-full px-2.5 py-0.5 whitespace-nowrap">
+                              <span class="text-[8.5px] font-bold text-muted-foreground/80 bg-foreground/[0.03] border border-border/60 rounded-full px-2.5 py-0.5 whitespace-nowrap">
                                 {r.trade_type}
                               </span>
                             </div>
-                            <span class="text-[7.5px] font-bold font-mono uppercase tracking-wider text-emerald-400 flex items-center gap-0.5">
+                            <span class="text-[7.5px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-0.5">
                               <CheckCircle size={7} class="fill-emerald-400/20" /> Verified Trade
                             </span>
                           </div>
@@ -361,7 +418,7 @@ export function ReviewsPage() {
           />
 
           {/* Modal Box */}
-          <div class="relative w-full max-w-lg bg-card border border-border/80 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl z-10 overflow-hidden liquid-glass">
+          <div class="relative w-full max-w-lg max-h-[90dvh] sm:max-h-[85vh] bg-card border border-border/80 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl z-10 overflow-y-auto liquid-glass">
             {/* Close Button */}
             <button
               onClick={() => setShowModal(false)}
@@ -525,12 +582,12 @@ export function ReviewsPage() {
 
                 {/* Proof Image Upload */}
                 <div>
-                  <label class="block text-[10px] font-bold font-mono uppercase tracking-wider text-muted-foreground mb-1.5">Upload Payout Proof Receipt *</label>
+                  <label class="block text-[10px] font-bold font-mono uppercase tracking-wider text-muted-foreground mb-1.5">Upload Payout Proof Receipts *</label>
                   <div class="relative border border-dashed border-border rounded-xl p-3 flex flex-col items-center justify-center bg-foreground/[0.01] hover:bg-foreground/[0.02] transition cursor-pointer">
                     <input
                       type="file"
                       accept="image/*"
-                      required={!imageUrl()}
+                      multiple
                       onChange={handleImageChange}
                       class="absolute inset-0 opacity-0 cursor-pointer"
                       disabled={uploadingImage()}
@@ -538,27 +595,42 @@ export function ReviewsPage() {
                     <Show when={uploadingImage()}>
                       <div class="flex flex-col items-center space-y-1.5 py-1">
                         <Loader2 class="animate-spin text-primary h-5 w-5" />
-                        <span class="text-[9px] text-muted-foreground font-mono">Uploading receipt...</span>
+                        <span class="text-[9px] text-muted-foreground font-mono">Uploading receipt(s)...</span>
                       </div>
                     </Show>
-                    <Show when={!uploadingImage() && imageUrl()}>
-                      <div class="flex flex-col items-center space-y-1.5 py-1">
-                        <div class="relative rounded-lg overflow-hidden border border-emerald-500/30">
-                          <img src={imageUrl()} alt="Uploaded Proof" class="h-12 w-auto object-cover" />
-                          <div class="absolute top-0 right-0 bg-emerald-500 text-white p-0.5 rounded-bl">
-                            <CheckCircle size={8} />
-                          </div>
-                        </div>
-                        <span class="text-[9px] text-emerald-400 font-bold font-mono">Proof Uploaded!</span>
-                      </div>
-                    </Show>
-                    <Show when={!uploadingImage() && !imageUrl()}>
+                    <Show when={!uploadingImage()}>
                       <div class="flex flex-col items-center space-y-0.5 py-1 text-center font-sans">
                         <Upload class="text-muted-foreground/60 h-5 w-5 mb-1" />
-                        <span class="text-xs font-semibold text-foreground">Click to upload receipt image</span>
+                        <span class="text-xs font-semibold text-foreground">Click to upload receipt images (Can select multiple)</span>
                       </div>
                     </Show>
                   </div>
+                  
+                  {/* Uploaded Images List */}
+                  <Show when={imageUrls().length > 0}>
+                    <div class="mt-4 space-y-2">
+                      <p class="text-[9px] font-bold font-mono uppercase tracking-wider text-muted-foreground">Uploaded Receipts ({imageUrls().length})</p>
+                      <div class="grid grid-cols-2 gap-2">
+                        <For each={imageUrls()}>
+                          {(url, idx) => (
+                            <div class="flex items-center justify-between p-2 rounded-xl bg-foreground/[0.02] border border-border/60">
+                              <div class="flex items-center gap-2">
+                                <img src={url} alt="Uploaded Proof Thumbnail" class="h-8 w-8 object-cover rounded" />
+                                <span class="text-[9px] font-mono text-muted-foreground">Receipt #{idx() + 1}</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeUploadedImage(idx())}
+                                class="p-1 rounded-full hover:bg-red-500/10 text-red-400 hover:text-red-500 transition cursor-pointer"
+                              >
+                                <X size={12} />
+                              </button>
+                            </div>
+                          )}
+                        </For>
+                      </div>
+                    </div>
+                  </Show>
                 </div>
 
                 {/* Messages */}
@@ -578,7 +650,7 @@ export function ReviewsPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={submitting() || uploadingImage() || !imageUrl()}
+                  disabled={submitting() || uploadingImage() || imageUrls().length === 0}
                   class="w-full rounded-full bg-primary/10 border border-primary/25 hover:bg-primary/20 hover:border-primary/45 text-primary backdrop-blur-md py-3 text-xs font-bold transition-all duration-300 text-center disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Show
@@ -596,18 +668,75 @@ export function ReviewsPage() {
       </Show>
 
       {/* Zoom Modal Overlay */}
-      <Show when={zoomedImgUrl()}>
+      {/* Zoom / Gallery Modal Overlay */}
+      <Show when={zoomedImages().length > 0}>
         <div
-          onClick={() => setZoomedImgUrl(null)}
-          class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={closeZoom}
+          class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            class="relative max-w-4xl max-h-[85vh] rounded-lg overflow-hidden border border-border/80 shadow-2xl bg-background p-2"
+            class="relative max-w-4xl max-h-[85vh] rounded-[2rem] overflow-hidden border border-border/80 shadow-2xl bg-card p-3 flex flex-col items-center justify-center select-none"
           >
-            <img src={zoomedImgUrl()} alt="Zoomed Receipt" class="max-w-full max-h-[80vh] object-contain rounded-lg" />
+            {/* Image display */}
+            <div class="relative flex items-center justify-center max-w-full max-h-[75vh]">
+              <img
+                src={zoomedImages()[zoomedIndex()]}
+                alt={`Receipt Proof ${zoomedIndex() + 1}`}
+                class="max-w-full max-h-[70vh] object-contain rounded-xl shadow-inner bg-black/40 border border-border/40"
+              />
+
+              {/* Prev Button */}
+              <Show when={zoomedImages().length > 1}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomedIndex(prev => (prev > 0 ? prev - 1 : zoomedImages().length - 1));
+                  }}
+                  class="absolute left-4 p-3 rounded-full bg-black/60 hover:bg-black/80 text-white transition hover:scale-105 active:scale-95 shadow-lg border border-white/10 cursor-pointer flex items-center justify-center"
+                >
+                  <ChevronLeft size={20} class="stroke-[2.5]" />
+                </button>
+              </Show>
+
+              {/* Next Button */}
+              <Show when={zoomedImages().length > 1}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomedIndex(prev => (prev < zoomedImages().length - 1 ? prev + 1 : 0));
+                  }}
+                  class="absolute right-4 p-3 rounded-full bg-black/60 hover:bg-black/80 text-white transition hover:scale-105 active:scale-95 shadow-lg border border-white/10 cursor-pointer flex items-center justify-center"
+                >
+                  <ChevronRight size={20} class="stroke-[2.5]" />
+                </button>
+              </Show>
+            </div>
+
+            {/* Bottom bar: Title & Pagination */}
+            <div class="w-full flex items-center justify-between mt-3 px-4 py-1 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-[9px] font-bold font-sans text-primary flex items-center gap-0.5 uppercase">
+                  <CheckCircle size={10} class="fill-primary/15" /> Ledger Receipt
+                </span>
+                <span class="h-1 w-1 rounded-full bg-border" />
+                <span class="text-[9px] font-sans font-bold text-muted-foreground uppercase">
+                  Verification Secure
+                </span>
+              </div>
+
+              <Show when={zoomedImages().length > 1}>
+                <span class="text-[10px] font-sans font-bold text-foreground bg-foreground/[0.04] border border-border px-3 py-1 rounded-full">
+                  Receipt {zoomedIndex() + 1} of {zoomedImages().length}
+                </span>
+              </Show>
+            </div>
+
+            {/* Close button */}
             <button
-              onClick={() => setZoomedImgUrl(null)}
+              onClick={closeZoom}
               class="absolute top-4 right-4 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition shadow-md border border-white/10 cursor-pointer"
             >
               <X size={14} />
