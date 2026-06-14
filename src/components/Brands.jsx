@@ -1,6 +1,6 @@
 import { createSignal, onSettled, For, Show } from "solid-js";
 import { TiltCard } from "./TiltCard";
-import { ChevronDown, ChevronUp } from "lucide-solid";
+import { ChevronDown, ChevronUp, X } from "lucide-solid";
 
 import amazonCard from "../assets/images/card-amazon-pkV6XfjL.png";
 import flipkartCard from "../assets/images/card-flipkart-SeEfOOvb.png";
@@ -57,6 +57,22 @@ export function Brands() {
 
   return (
     <section id="brands" class="relative py-10 sm:py-14 overflow-hidden">
+      <style>{`
+        @keyframes overlayFadeIn {
+          from { opacity: 0; transform: translateZ(30px) scale(0.95); }
+          to { opacity: 1; transform: translateZ(30px) scale(1); }
+        }
+        .animate-overlay-fade {
+          animation: overlayFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
       <div class="absolute inset-0 grid-bg pointer-events-none opacity-50" />
       <div class="relative mx-auto max-w-7xl px-4">
 
@@ -80,6 +96,70 @@ export function Brands() {
                   class="cursor-pointer h-full"
                 >
                   <TiltCard class="liquid-glass rounded-[2rem] p-6 h-full overflow-hidden flex flex-col justify-between border border-border/60 hover:border-border/90 hover:bg-foreground/[0.01] transition-all duration-300">
+                    
+                    {/* Rates Overlay Popup */}
+                    <Show when={isExpanded() && b.variants && b.variants.length > 0}>
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        class="absolute inset-0 bg-background/95 backdrop-blur-xl z-20 p-6 flex flex-col justify-between border border-primary/30 rounded-[2rem] animate-overlay-fade"
+                        style={{
+                          transform: "translateZ(30px)",
+                        }}
+                      >
+                        <div>
+                          {/* Overlay Header */}
+                          <div class="flex items-center justify-between pb-3 border-b border-border/50 mb-4">
+                            <h4 class="text-sm font-bold font-display text-foreground flex items-center gap-1.5">
+                              <span class="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                              {b.name} Rates
+                            </h4>
+                            <button
+                              type="button"
+                              onClick={() => toggleExpand(cardId)}
+                              class="text-muted-foreground hover:text-foreground transition p-1.5 rounded-full bg-foreground/[0.04] border border-border hover:bg-foreground/[0.08] cursor-pointer"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+
+                          {/* Scrollable list of variants */}
+                          <div class="space-y-3 max-h-[160px] overflow-y-auto pr-1 no-scrollbar text-xs">
+                            <p class="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Variant Payout Breakdown</p>
+                            <For each={b.variants}>
+                              {(v) => (
+                                <div class="flex justify-between items-center text-muted-foreground hover:text-foreground transition py-1.5 border-b border-border/10 last:border-0">
+                                  <span class="font-semibold text-foreground truncate max-w-[45%]">{v.name}</span>
+                                  <div class="flex items-center justify-end gap-1.5 max-w-[55%]">
+                                    <Show when={v.inr_rate}>
+                                      <span class="font-sans text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-lg border border-emerald-500/20 flex items-center gap-1 text-[10px]">
+                                        <span class="text-[7.5px] opacity-75 font-semibold text-emerald-500/90 uppercase">INR</span> {v.inr_rate}
+                                      </span>
+                                    </Show>
+                                    <Show when={v.usdt_rate}>
+                                      <span class="font-sans text-cyan-400 font-bold bg-cyan-500/10 px-2.5 py-0.5 rounded-lg border border-cyan-500/20 flex items-center gap-1 text-[10px]">
+                                        <span class="text-[7.5px] opacity-75 font-semibold text-cyan-500/90 uppercase">USDT</span> {v.usdt_rate}
+                                      </span>
+                                    </Show>
+                                  </div>
+                                </div>
+                              )}
+                            </For>
+                          </div>
+                        </div>
+
+                        {/* WhatsApp CTA at the bottom */}
+                        <a
+                          href="https://wa.me/919120138828"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          class="w-full text-center rounded-full bg-primary text-black font-bold py-2.5 text-[11px] transition block hover:bg-accent cursor-pointer"
+                        >
+                          Start Trade on WhatsApp ➔
+                        </a>
+                      </div>
+                    </Show>
+
                     <div>
                       {/* Image container */}
                       <div class="relative h-40 mb-4 grid place-items-center" style={{ transform: "translateZ(40px)" }}>
@@ -120,41 +200,6 @@ export function Brands() {
                           {isExpanded() ? <ChevronUp size={16} class="text-primary" /> : <ChevronDown size={16} />}
                         </span>
                       </div>
-
-                      {/* Variants Breakdown */}
-                      <Show when={isExpanded() && b.variants && b.variants.length > 0}>
-                        <div class="overflow-hidden mt-3 pt-3 border-t border-border/30 space-y-2.5 text-xs transition-all duration-300">
-                          <p class="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Variant Payout Breakdown</p>
-                          <For each={b.variants}>
-                            {(v) => (
-                              <div class="flex justify-between items-center text-muted-foreground hover:text-foreground transition py-1 border-b border-border/10 last:border-0">
-                                <span class="font-semibold text-foreground">{v.name}</span>
-                                <div class="flex flex-wrap items-center justify-end gap-1.5 max-w-[70%]">
-                                  <Show when={v.inr_rate}>
-                                    <span class="font-sans text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 flex items-center gap-1 text-[10.5px]">
-                                      <span class="text-[8px] opacity-75 font-semibold text-emerald-500/90 uppercase">INR</span> {v.inr_rate}
-                                    </span>
-                                  </Show>
-                                  <Show when={v.usdt_rate}>
-                                    <span class="font-sans text-cyan-400 font-bold bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20 flex items-center gap-1 text-[10.5px]">
-                                      <span class="text-[8px] opacity-75 font-semibold text-cyan-500/90 uppercase">USDT</span> {v.usdt_rate}
-                                    </span>
-                                  </Show>
-                                </div>
-                              </div>
-                            )}
-                          </For>
-                          <a
-                            href="https://wa.me/919120138828"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            class="mt-3.5 w-full text-center rounded-full bg-primary text-black font-bold py-2 text-[11px] transition block hover:bg-accent cursor-pointer"
-                          >
-                            Start Trade on WhatsApp ➔
-                          </a>
-                        </div>
-                      </Show>
                     </div>
                   </TiltCard>
                 </div>
